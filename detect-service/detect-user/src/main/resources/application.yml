@@ -1,0 +1,30 @@
+server:
+  port: 7000
+
+spring:
+  application:
+    name: detect-user
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/ai-detect?characterEncoding=utf-8&serverTimezone=GMT%2b8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      max-wait: 60000
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8000/eureka/

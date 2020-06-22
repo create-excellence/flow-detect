@@ -16,6 +16,7 @@
     <modules>
         <module>detect-common</module>
         <module>detect-user</module>
+        <module>detect-flow</module>
     </modules>
 
 </project>

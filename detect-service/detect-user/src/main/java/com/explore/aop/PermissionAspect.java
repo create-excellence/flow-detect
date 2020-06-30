@@ -1,12 +1,7 @@
 package com.explore.aop;
 
-import com.explore.authentication.JWTUtil;
-import com.explore.common.Const;
-import com.explore.entity.User;
 import com.explore.service.IRoleService;
 import com.explore.service.IUserService;
-import com.explore.service.impl.RoleServiceImpl;
-import com.explore.service.impl.UserServiceImpl;
 import com.explore.common.annotation.Permission;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -15,7 +10,6 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -67,9 +61,9 @@ public class PermissionAspect {
                     return true;
                 }
             }
-
         }
 //        throw new AuthenticationException("权限不足");
+//        throw new Exception("权限不足");
         return false;
     }
 

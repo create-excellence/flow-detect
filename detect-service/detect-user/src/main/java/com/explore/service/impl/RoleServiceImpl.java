@@ -3,6 +3,7 @@ package com.explore.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.explore.common.Const;
 import com.explore.entity.Role;
 import com.explore.mappers.RoleMapper;
 import com.explore.service.IRoleService;
@@ -28,7 +29,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements IRo
         queryWrapper.eq(Role::getUserId, userId);
         Page<Role> page = new Page();
         page.setTotal(10);
-        Page<Role> roles = this.page(page, queryWrapper);
-        return roles.getRecords().stream().map(role -> role.getRole()).collect(Collectors.toList());
+        List<Role> roles = this.page(page, queryWrapper).getRecords();
+        if(roles.size() == 0){      // 用户身份默认为user
+            Role r = new Role();
+            r.setRole(Const.USER);
+            roles.add(r);
+        }
+        return roles.stream().map(role -> role.getRole()).collect(Collectors.toList());
     }
 }

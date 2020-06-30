@@ -1,7 +1,7 @@
 package com.explore.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.vo.UserVo;
+import com.explore.vo.UserVo;
 import com.explore.entity.User;
 
 /**

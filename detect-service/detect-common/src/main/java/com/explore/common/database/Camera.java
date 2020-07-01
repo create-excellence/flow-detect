@@ -28,7 +28,7 @@ public class Camera {
     public static Camera invalid(){
         Camera camera = new Camera();
         camera.setId(-1L);
-        camera.setCode("");
+        camera.setWarning(-1);
         return camera;
     }
 }

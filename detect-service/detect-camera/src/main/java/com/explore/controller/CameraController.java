@@ -36,7 +36,7 @@ public class CameraController {
      * @param camera obj
      */
     @PostMapping
-    public ServerResponse addCamera(Camera camera){
+    public ServerResponse addCamera(@RequestBody Camera camera){
         return cameraService.addCamera(camera);
     }
 
@@ -44,8 +44,9 @@ public class CameraController {
      * 修改摄像头
      * @param camera obj
      */
-    @PutMapping
-    public ServerResponse reviseCamera(Camera camera){
+    @PutMapping("/{id}")
+    public ServerResponse reviseCamera(@RequestBody Camera camera,@PathVariable("id") Integer id){
+        camera.setId(id);
         camera.setToken(null);
         camera.setUserId(null);
         camera.setStatus(null);

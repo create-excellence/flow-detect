@@ -17,6 +17,7 @@
         <module>detect-common</module>
         <module>detect-user</module>
         <module>detect-flow</module>
+        <module>detect-camera</module>
     </modules>
 
 </project>

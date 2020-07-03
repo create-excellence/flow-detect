@@ -1,25 +1,54 @@
 package com.explore.common.database;
 
-import lombok.Data;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @author PinTeh
- * @date 2020/6/22
+ * <p>
+ * 
+ * </p>
+ *
+ * @author jobob
+ * @since 2020-06-28
  */
 @Data
-public class Camera {
+@EqualsAndHashCode(callSuper = false)
+public class Camera implements Serializable {
 
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
+    private Integer id;
+
+    private String name;
+
+    private String source;
+
+    /**
+     * 摄像头编号
+     */
     private String code;
 
+    /**
+     * 摄像头具体放置地点
+     */
     private String position;
 
-    private Long organizationId;
+    private String token;
+
+    private Integer status;
+
+    private Integer userId;
 
     private Integer warning;
+
+    /**
+     * 所属组织
+     */
+    private Integer organizationId;
 
     private LocalDateTime createTime;
 
@@ -27,8 +56,9 @@ public class Camera {
 
     public static Camera invalid(){
         Camera camera = new Camera();
-        camera.setId(-1L);
-        camera.setWarning(-1);
+        camera.setId(-1);
+        camera.setCode("");
         return camera;
     }
+
 }

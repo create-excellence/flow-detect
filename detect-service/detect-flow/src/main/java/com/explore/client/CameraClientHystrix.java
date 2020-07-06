@@ -1,5 +1,6 @@
 package com.explore.client;
 
+import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class CameraClientHystrix implements CameraClient {
 
     @Override
-    public Camera getById(Long id) {
-        return Camera.invalid();
+    public ServerResponse<Camera> getById(Long id) {
+        return ServerResponse.createBySuccess(Camera.invalid());
     }
 }

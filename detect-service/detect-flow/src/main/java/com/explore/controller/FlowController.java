@@ -8,6 +8,7 @@ import com.explore.common.database.Camera;
 import com.explore.common.database.Flow;
 import com.explore.servcie.IFlowService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,7 +24,7 @@ public class FlowController {
 
     private final CameraClient  cameraClient;
 
-    public FlowController(IFlowService flowService, CameraClient cameraClient) {
+    public FlowController(IFlowService flowService,CameraClient cameraClient) {
         this.flowService = flowService;
         this.cameraClient = cameraClient;
     }
@@ -35,7 +36,7 @@ public class FlowController {
     @PostMapping
     public void save(@RequestBody Flow flow){
         flowService.save(flow);
-        Camera camera = cameraClient.getById(flow.getCameraId());
+        Camera camera = cameraClient.getById(flow.getCameraId()).getData();
         if (flow.getFlow().compareTo(camera.getWarning())>0){
             //TODO
             log.info(" warning => flow value : {}",flow.getFlow());

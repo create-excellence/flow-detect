@@ -1,5 +1,6 @@
 package com.explore.client;
 
+import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,5 +18,5 @@ public interface CameraClient {
      * @return Camera
      */
     @GetMapping("/detect-camera/api/v1/camera")
-    Camera getById(Long id);
+    ServerResponse<Camera> getById(Long id);
 }

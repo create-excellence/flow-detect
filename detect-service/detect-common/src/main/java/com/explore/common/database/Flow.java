@@ -15,7 +15,7 @@ public class Flow {
 
     private Integer flow;
 
-    private Long cameraId;
+    private Integer cameraId;
 
     private String photoAddress;
 

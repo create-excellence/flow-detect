@@ -3,12 +3,14 @@ package com.explore.client;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @author PinTeh
  * @date 2020/6/22
  */
+@Primary
 @FeignClient(value = "detect-camera",fallback = CameraClientHystrix.class)
 public interface CameraClient {
 
@@ -18,5 +20,5 @@ public interface CameraClient {
      * @return Camera
      */
     @GetMapping("/detect-camera/api/v1/camera")
-    ServerResponse<Camera> getById(Long id);
+    ServerResponse<Camera> getById(Integer id);
 }

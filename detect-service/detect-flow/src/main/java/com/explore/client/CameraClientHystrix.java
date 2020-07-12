@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class CameraClientHystrix implements CameraClient {
 
     @Override
-    public ServerResponse<Camera> getById(Long id) {
+    public ServerResponse<Camera> getById(Integer id) {
         return ServerResponse.createBySuccess(Camera.invalid());
     }
 }

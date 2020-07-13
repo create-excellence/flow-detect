@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2020/7/4
  */
 @RestController
-@RequestMapping("/api/vi/camera")
+@RequestMapping("/api/v1/camera")
 public class CameraController {
 
     private final String rtspPath = "rtsp://%s:%s@%s:%s/h264/ch1/main/av_stream";
@@ -40,9 +40,17 @@ public class CameraController {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("cid", String.valueOf(cid));
         params.add("source", camera.getSource());
-        params.add("pushUrl", "");
+        params.add("pushUrl", camera.getPushUrl());
         String startUrl = path + "/camera/start";
         return HttpUtils.post(startUrl, params);
+    }
+
+    @GetMapping("/test")
+    public ServerResponse test(Integer cid){
+        ServerResponse<Camera> serverResponse = cameraClient.getById(cid);
+        Camera camera = serverResponse.getData();
+        System.out.println(camera.toString());
+        return ServerResponse.createBySuccess();
     }
 
     /**

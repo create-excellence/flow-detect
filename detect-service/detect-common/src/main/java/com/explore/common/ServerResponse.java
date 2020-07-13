@@ -1,10 +1,16 @@
 package com.explore.common;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
 /**
  * @author PinTeh
  * @date 2020/4/14
  */
-public class ServerResponse<T> {
+@NoArgsConstructor
+public class ServerResponse<T> implements Serializable {
 
     private int code;
     private String message;

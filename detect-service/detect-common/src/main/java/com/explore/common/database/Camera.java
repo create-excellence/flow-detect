@@ -1,8 +1,10 @@
 package com.explore.common.database;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
  * @since 2020-06-28
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class Camera implements Serializable {
 
@@ -26,6 +30,8 @@ public class Camera implements Serializable {
     private String name;
 
     private String source;
+
+    private String pushUrl;
 
     /**
      * 摄像头编号

@@ -3,6 +3,8 @@ package com.explore.client;
 import com.explore.common.database.Camera;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * Hystrix
  * @author PinTeh
@@ -10,9 +12,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserClientHystrix implements UserClient {
+
     //TODO 获取用户
     @Override
-    public Camera getById(Long id) {
-        return Camera.invalid();
+    public Map<String,Integer> getById() {
+
+        return null;
     }
 }

@@ -30,9 +30,7 @@ public class CameraServiceImpl extends ServiceImpl<CameraMapper, Camera> impleme
     public ServerResponse addCamera(Camera camera) {
         camera.setCreateTime(LocalDateTime.now());
         camera.setUpdateTime(LocalDateTime.now());
-        camera.setStatus(OPEN);
-        //TODO 获取UserId
-        camera.setUserId(1);
+//        camera.setStatus(OPEN);
         camera.setToken(getToken());
         if(this.save(camera)){
             return ServerResponse.createBySuccessMessage("添加成功");

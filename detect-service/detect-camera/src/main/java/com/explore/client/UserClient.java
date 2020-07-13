@@ -4,18 +4,19 @@ import com.explore.common.database.Camera;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Map;
+
 /**
  * @author PinTeh
  * @date 2020/6/22
  */
-@FeignClient(value = "detect-user",fallback = UserClientHystrix.class)
+@FeignClient(name = "detect-user",fallback = UserClientHystrix.class)
 public interface UserClient {
 
     /**
-     * 获取摄像头参数信息
-     * @param id cid
+     * 获取用户id
      * @return Camera
      */
-    @GetMapping("/detect-camera/api/v1/camera")
-    Camera getById(Long id);
+    @GetMapping("/user/getUserId")
+    Map<String,Integer> getById();
 }

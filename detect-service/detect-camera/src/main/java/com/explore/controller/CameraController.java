@@ -3,10 +3,13 @@ package com.explore.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.explore.client.UserClient;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import com.explore.service.ICameraService;
+import com.explore.until.UserUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -24,11 +27,14 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/camera")
 public class CameraController {
 
-    ICameraService cameraService;
+    private ICameraService cameraService;
+
+   private UserUtils userUtils;
 
 
-    private  CameraController(ICameraService cameraService){
+    private  CameraController(ICameraService cameraService,UserUtils userUtils){
         this.cameraService=cameraService;
+        this.userUtils=userUtils;
     }
 
     /**
@@ -37,6 +43,7 @@ public class CameraController {
      */
     @PostMapping
     public ServerResponse addCamera(@RequestBody Camera camera){
+        camera.setUserId(userUtils.getUserId());
         return cameraService.addCamera(camera);
     }
 
@@ -74,7 +81,7 @@ public class CameraController {
     public ServerResponse getList(@RequestParam(required = false,defaultValue = "1")Integer page,
                                       @RequestParam(required = false,defaultValue = "10")Integer limit){
         //TODO 获取UserId
-        Integer userId = 1;
+        Integer userId = userUtils.getUserId();
 
         return ServerResponse.createBySuccess(
                 cameraService.page(

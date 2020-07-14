@@ -4,7 +4,6 @@ import com.explore.client.CameraClient;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import com.explore.utils.HttpUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,14 +42,6 @@ public class CameraController {
         params.add("pushUrl", camera.getPushUrl());
         String startUrl = path + "/camera/start";
         return HttpUtils.post(startUrl, params);
-    }
-
-    @GetMapping("/test")
-    public ServerResponse test(Integer cid){
-        ServerResponse<Camera> serverResponse = cameraClient.getById(cid);
-        Camera camera = serverResponse.getData();
-        System.out.println(camera.toString());
-        return ServerResponse.createBySuccess();
     }
 
     /**

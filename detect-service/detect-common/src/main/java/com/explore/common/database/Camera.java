@@ -33,6 +33,8 @@ public class Camera implements Serializable {
 
     private String pushUrl;
 
+    private String cover;
+
     /**
      * 摄像头编号
      */

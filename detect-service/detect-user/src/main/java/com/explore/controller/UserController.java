@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ServerResponse login(@NotNull User user){
+    public ServerResponse login(@NotNull @RequestBody User user){
         UserVo userVo = this.userService.login(user.getUsername(),user.getPassword());
         return ServerResponse.createBySuccessMessage("login success", userVo);
     }

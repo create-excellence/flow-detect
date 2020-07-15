@@ -35,6 +35,9 @@ public class Camera implements Serializable {
 
     private String cover;
 
+    private String ip;
+
+
     /**
      * 摄像头编号
      */

@@ -81,7 +81,7 @@ public class CameraController {
     public ServerResponse getList(@RequestParam(required = false,defaultValue = "1")Integer page,
                                       @RequestParam(required = false,defaultValue = "10")Integer limit){
         //TODO 获取UserId
-        Integer userId = userUtils.getUserId();
+        Integer userId =1;
 
         return ServerResponse.createBySuccess(
                 cameraService.page(

@@ -1,19 +1,14 @@
 package com.explore.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.explore.common.Const;
-import com.explore.common.annotation.Permission;
-import com.explore.form.ChangePassword;
-import com.explore.form.UserQuery;
-import com.explore.vo.UserVo;
 import com.explore.common.ServerResponse;
 import com.explore.entity.User;
+import com.explore.form.ChangePassword;
+import com.explore.form.UserQuery;
 import com.explore.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author PinTeh
@@ -30,13 +25,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ServerResponse login(@NotNull @RequestBody User user){
-        UserVo userVo = this.userService.login(user.getUsername(),user.getPassword());
-        return ServerResponse.createBySuccessMessage("login success", userVo);
+    public ServerResponse login(@NotNull User user) {
+        return this.userService.login(user.getUsername(), user.getPassword());
     }
 
     @PostMapping("/register")
-    public ServerResponse register(User user){
+    public ServerResponse register(User user) {
         return this.userService.register(user);
     }
 
@@ -48,7 +42,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PostMapping("/change-password")
-    public ServerResponse changePassword(@NotNull ChangePassword changePassword){
+    public ServerResponse changePassword(@NotNull ChangePassword changePassword) {
         return this.userService.changePassword(changePassword);
     }
 
@@ -60,7 +54,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/list")
-    public ServerResponse list(UserQuery query){
+    public ServerResponse list(UserQuery query) {
         return ServerResponse.createBySuccess(userService.pageByQuery(query));
     }
 
@@ -72,18 +66,17 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PostMapping("/add")
-    public ServerResponse add(User user){
+    public ServerResponse add(User user) {
         return this.userService.register(user);
     }
 
 
     @DeleteMapping("/delete/{user_id:\\d+}")
-    public ServerResponse delete(@PathVariable("user_id")Long userId){
+    public ServerResponse delete(@PathVariable("user_id") Long userId) {
         Boolean result = userService.removeById(userId);
-        if(result){
+        if (result) {
             return ServerResponse.createBySuccess("删除成功");
-        }
-        else{
+        } else {
             return ServerResponse.createByErrorMessage("删除失败");
         }
     }
@@ -96,12 +89,11 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PutMapping("/update")
-    public ServerResponse update(@NotNull User user){
+    public ServerResponse update(@NotNull User user) {
         Boolean result = userService.saveOrUpdate(user);
-        if(result){
+        if (result) {
             return ServerResponse.createBySuccess("用户信息更新成功");
-        }
-        else{
+        } else {
             return ServerResponse.createByErrorMessage("用户信息更新失败");
         }
     }
@@ -116,7 +108,7 @@ public class UserController {
      **/
 //    @Permission(roles = {Const.ADMIN})
     @GetMapping("/getUserId")
-    public ServerResponse getUserId(){
+    public ServerResponse getUserId() {
         HashMap<String, Long> data = new HashMap();
         data.put("user_id", userService.getUserIdByToken());
         return ServerResponse.createBySuccess(data);
@@ -130,12 +122,11 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("flush-token")
-    public ServerResponse flushToken(){
+    public ServerResponse flushToken() {
         String token = userService.flushToken();
-        if(null != token){
+        if (null != token) {
             return ServerResponse.createBySuccessMessage("token刷新成功", token);
-        }
-        else{
+        } else {
             return ServerResponse.createByErrorMessage("token刷新失败");
         }
     }

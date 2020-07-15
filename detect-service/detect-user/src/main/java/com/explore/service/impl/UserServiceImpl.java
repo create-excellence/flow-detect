@@ -3,8 +3,8 @@ package com.explore.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.explore.common.Const;
 import com.explore.authentication.JWTUtil;
+import com.explore.common.Const;
 import com.explore.common.ServerResponse;
 import com.explore.entity.User;
 import com.explore.form.ChangePassword;
@@ -30,47 +30,50 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Autowired
-    IRoleService roleService;
+    private IRoleService roleService;
 
     @Override
-    public UserVo login(String username, String password) {
+    public ServerResponse login(String username, String password) {
+        if (StringUtils.isEmpty(username)) {
+            return ServerResponse.createByErrorMessage("用户名不能为空!");
+        } else if (StringUtils.isEmpty(password)) {
+            return ServerResponse.createByErrorMessage("密码不能为空!");
+        }
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
         queryWrapper.eq(User::getUsername, username)
                 .eq(User::getPassword, password);
         User user = this.getOne(queryWrapper);
-        if (user != null) {          // 登录成功
+        if (null != user) {          // 登录成功
             // 使用用户id注册token, 使用用户密码加密
             String token = JWTUtil.encryptToken(JWTUtil.sign(user.getId().toString(), password));
             UserVo userVo = new UserVo();
             userVo.setToken(token);
             BeanUtils.copyProperties(user, userVo);
             userVo.setRoles(roleService.getRoles(user.getId()));
-            return userVo;
+            return ServerResponse.createBySuccessMessage("login success", userVo);
         }
         // 登录失败
-        return null;
+        return ServerResponse.createByErrorMessage("用户名或密码错误");
     }
 
     @Override
     public ServerResponse register(User user) {
-        if(user==null)
-        {
+        if (null == user) {
             return ServerResponse.createByErrorMessage("注册失败!");
-        }else if(StringUtils.isEmpty(user.getUsername())){
+        } else if (StringUtils.isEmpty(user.getUsername())) {
             return ServerResponse.createByErrorMessage("用户名不能为空!");
-        }else if(StringUtils.isEmpty(user.getPassword())){
+        } else if (StringUtils.isEmpty(user.getPassword())) {
             return ServerResponse.createByErrorMessage("密码不能为空!");
-        }else {
-            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
-            queryWrapper.eq(User::getUsername, user.getUsername());
-            if(this.getOne(queryWrapper) != null){
-                return ServerResponse.createByErrorMessage("该用户名已被使用!");
-            }
+        }
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.eq(User::getUsername, user.getUsername());
+        if (this.getOne(queryWrapper) != null) {
+            return ServerResponse.createByErrorMessage("该用户名已被使用!");
         }
         save(user);
         user.setPassword("");
         UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user,userVo);
+        BeanUtils.copyProperties(user, userVo);
         return ServerResponse.createBySuccessMessage("register success", userVo);
     }
 
@@ -80,10 +83,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         queryWrapper.eq(User::getUsername, changePassword.getUsername())
                 .eq(User::getPassword, changePassword.getOldPassword());
         User user = getOne(queryWrapper);
+        user.setPassword(changePassword.getNewPassword());
         Boolean result = saveOrUpdate(user);
-        if(result){
+        if (result) {
             return ServerResponse.createBySuccess("密码修改成功!");
-        }else{
+        } else {
             return ServerResponse.createBySuccess("密码修改失败!");
         }
     }
@@ -92,7 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Page<User> pageByQuery(UserQuery query) {
         Page page = new Page<>(query.getPage(), query.getSize());
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
-        if(StringUtils.isEmpty(query.getUsername())){
+        if (!StringUtils.isEmpty(query.getUsername())) {
             queryWrapper.eq(User::getUsername, query.getUsername());
         }
         return page(page, queryWrapper);

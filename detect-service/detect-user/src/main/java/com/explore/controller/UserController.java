@@ -129,6 +129,7 @@ public class UserController {
      * @Param []
      * @Return com.explore.common.ServerResponse
      **/
+    @GetMapping("flush-token")
     public ServerResponse flushToken(){
         String token = userService.flushToken();
         if(null != token){

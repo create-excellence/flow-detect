@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableEurekaClient
 @SpringBootApplication
 @ComponentScan("com.explore.service")
-@MapperScan("com.explore.analyze.mappers")
+@MapperScan({"com.explore.analyze.mappers", "com.explore.mapper"})
 public class FlowAnalyzeApplication {
 
     public static void main(String[] args) {

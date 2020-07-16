@@ -8,6 +8,8 @@ import com.explore.form.ChangePassword;
 import com.explore.form.UserQuery;
 import com.explore.vo.UserVo;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author PinTeh
  * @date 2020/4/14
@@ -17,6 +19,8 @@ public interface IUserService extends IService<User> {
 
     Long getUserIdByToken();
 
+    Long getUserIdByToken(String token);
+
     ServerResponse register(User user);
 
     ServerResponse changePassword(ChangePassword changePassword);
@@ -24,4 +28,6 @@ public interface IUserService extends IService<User> {
     Page<UserVo> pageByQuery(UserQuery query);
 
     String flushToken();
+
+    String flushToken(@NotNull String token);
 }

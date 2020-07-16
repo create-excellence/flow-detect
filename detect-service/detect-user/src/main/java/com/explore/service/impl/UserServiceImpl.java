@@ -20,6 +20,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,15 +121,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public String flushToken() {
-        User user = getById(this.getUserIdByToken());
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader(Const.TOKEN);
+        return this.flushToken(token);
+    }
+
+    @Override
+    public String flushToken(@NotNull String token) {
+        User user = getById(this.getUserIdByToken(token));
         // 用户信息获取失败
         if (user == null) {
             return null;
         }
         // 用户信息获取成功
-        // 使用用户id注册token, 使用用户密码加密
-        String token = JWTUtil.encryptToken(JWTUtil.sign(user.getId().toString(), user.getPassword()));
-        return token;
+        // 使用用户id重新注册token, 使用用户密码加密
+        String newToken = JWTUtil.encryptToken(JWTUtil.sign(user.getId().toString(), user.getPassword()));
+        return newToken;
     }
 
     /**
@@ -142,6 +150,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Long getUserIdByToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String token = request.getHeader(Const.TOKEN);
+        return getUserIdByToken(token);
+    }
+
+    /**
+     * @Author 安羽兮
+     * @Description 直接解析传入的token
+     * @Date 14:30 2020/7/16
+     * @Param [token]
+     * @Return java.lang.Long
+     **/
+    @Override
+    public Long getUserIdByToken(String token) {
         if (StringUtils.isEmpty(token))
 //            throw new AuthenticationException("请登录后访问！");
             return null;
@@ -154,5 +174,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return null;
         return Long.parseLong(id);
     }
-
 }

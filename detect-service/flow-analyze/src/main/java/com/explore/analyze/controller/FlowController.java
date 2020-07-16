@@ -5,6 +5,7 @@ import com.explore.analyze.service.IFlowService;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Flow;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +36,7 @@ public class FlowController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/flow")
-    public ServerResponse flow(FlowQuery query) {
+    public ServerResponse flow(@RequestBody FlowQuery query) {
         List<Flow> flows = flowService.getFlowByQuery(query);
         return ServerResponse.createBySuccess(flows);
     }

@@ -25,12 +25,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ServerResponse login(@NotNull User user) {
+    public ServerResponse login(@NotNull @RequestBody User user) {
         return this.userService.login(user.getUsername(), user.getPassword());
     }
 
     @PostMapping("/register")
-    public ServerResponse register(User user) {
+    public ServerResponse register(@RequestBody User user) {
         return this.userService.register(user);
     }
 
@@ -42,7 +42,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PostMapping("/change-password")
-    public ServerResponse changePassword(@NotNull ChangePassword changePassword) {
+    public ServerResponse changePassword(@NotNull @RequestBody ChangePassword changePassword) {
         return this.userService.changePassword(changePassword);
     }
 
@@ -54,7 +54,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/list")
-    public ServerResponse list(UserQuery query) {
+    public ServerResponse list(@RequestBody UserQuery query) {
         return ServerResponse.createBySuccess(userService.pageByQuery(query));
     }
 
@@ -66,7 +66,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PostMapping("/add")
-    public ServerResponse add(User user) {
+    public ServerResponse add(@RequestBody User user) {
         return this.userService.register(user);
     }
 
@@ -106,7 +106,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PutMapping("/update")
-    public ServerResponse update(@NotNull User user) {
+    public ServerResponse update(@NotNull @RequestBody User user) {
         Boolean result = userService.saveOrUpdate(user);
         if (result) {
             return ServerResponse.createBySuccess("用户信息更新成功");
@@ -125,9 +125,9 @@ public class UserController {
      **/
 //    @Permission(roles = {Const.ADMIN})
     @GetMapping("/getUserId")
-    public ServerResponse getUserId() {
+    public ServerResponse getUserId(@RequestParam("token") String token) {
         HashMap<String, Long> data = new HashMap();
-        data.put("user_id", userService.getUserIdByToken());
+        data.put("user_id", userService.getUserIdByToken(token));
         return ServerResponse.createBySuccess(data);
     }
 
@@ -139,10 +139,12 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("flush-token")
-    public ServerResponse flushToken() {
-        String token = userService.flushToken();
-        if (null != token) {
-            return ServerResponse.createBySuccessMessage("token刷新成功", token);
+    public ServerResponse flushToken(@RequestParam("token") String token) {
+        String newToken = userService.flushToken(token);
+        if (null != newToken) {
+            HashMap<String, String> data = new HashMap();
+            data.put("token", newToken);
+            return ServerResponse.createBySuccessMessage("token刷新成功", data);
         } else {
             return ServerResponse.createByErrorMessage("token刷新失败");
         }

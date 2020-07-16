@@ -6,6 +6,7 @@ import com.explore.common.ServerResponse;
 import com.explore.entity.User;
 import com.explore.form.ChangePassword;
 import com.explore.form.UserQuery;
+import com.explore.vo.UserVo;
 
 /**
  * @author PinTeh
@@ -20,7 +21,7 @@ public interface IUserService extends IService<User> {
 
     ServerResponse changePassword(ChangePassword changePassword);
 
-    Page<User> pageByQuery(UserQuery query);
+    Page<UserVo> pageByQuery(UserQuery query);
 
     String flushToken();
 }

@@ -25,16 +25,16 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
         if (query.getCameraId() != null && query.getCameraId() > 0) {
             queryWrapper.eq(Flow::getCameraId, query.getCameraId());
         }
-        if (FlowQuery.DAY.equals(query.getType())) {                // 一天内
-            query.setBeginTime(query.getEndTime().minusDays(1));
-        } else if (FlowQuery.WEEK.equals(query.getType())) {        // 一周内
-            query.setBeginTime(query.getEndTime().minusWeeks(1));
-        } else if (FlowQuery.MONTH.equals(query.getType())) {       // 一月前
-            query.setBeginTime(query.getEndTime().minusMonths(1));
+        if (FlowQuery.DAY.equals(query.getType())) {                // 天
+            query.setBeginTime(query.getEndTime().minusDays(query.getNum()));
+        } else if (FlowQuery.WEEK.equals(query.getType())) {        // 周
+            query.setBeginTime(query.getEndTime().minusWeeks(query.getNum()));
+        } else if (FlowQuery.MONTH.equals(query.getType())) {       // 月
+            query.setBeginTime(query.getEndTime().minusMonths(query.getNum()));
         }
         queryWrapper.ge(Flow::getCurrentTime, query.getBeginTime())
                 .le(Flow::getCurrentTime, query.getEndTime());
-        // todo 人流量展示方式
+        // todo 人流量统计方式
         return null;
 //        return page(new Page<>(1), queryWrapper);
     }

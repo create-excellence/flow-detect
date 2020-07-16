@@ -31,7 +31,7 @@ public class FlowController {
      * @Author 安羽兮
      * @Description 获取指定设备指定时间段内历史人流量
      * @Date 17:51 2020/7/15
-     * @Param []
+     * @Param [query]
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/flow")
@@ -39,4 +39,6 @@ public class FlowController {
         List<Flow> flows = flowService.getFlowByQuery(query);
         return ServerResponse.createBySuccess(flows);
     }
+
+    // todo 分析人流量功能
 }

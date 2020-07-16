@@ -14,13 +14,14 @@ import com.explore.service.IRoleService;
 import com.explore.service.IUserService;
 import com.explore.vo.UserVo;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author PinTeh
@@ -29,8 +30,11 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
-    @Autowired
-    private IRoleService roleService;
+    private final IRoleService roleService;
+
+    public UserServiceImpl(IRoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @Override
     public ServerResponse login(String username, String password) {
@@ -49,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             UserVo userVo = new UserVo();
             userVo.setToken(token);
             BeanUtils.copyProperties(user, userVo);
+            userVo.setPassword("");
             userVo.setRoles(roleService.getRoles(user.getId()));
             return ServerResponse.createBySuccessMessage("login success", userVo);
         }
@@ -93,13 +98,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Page<User> pageByQuery(UserQuery query) {
+    public Page<UserVo> pageByQuery(UserQuery query) {
         Page page = new Page<>(query.getPage(), query.getSize());
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
         if (!StringUtils.isEmpty(query.getUsername())) {
             queryWrapper.eq(User::getUsername, query.getUsername());
         }
-        return page(page, queryWrapper);
+        Page<UserVo> data = page(page, queryWrapper);
+        List<UserVo> userVos = new ArrayList<>();
+        data.getRecords().stream().forEach(user -> {
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(user, userVo);
+            List roles = roleService.getRoles(user.getId());
+            userVo.setRoles(roles);
+            userVo.setPassword("");
+            userVos.add(userVo);
+        });
+        data.setRecords(userVos);
+        return data;
     }
 
     @Override

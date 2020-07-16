@@ -70,6 +70,23 @@ public class UserController {
         return this.userService.register(user);
     }
 
+    /**
+     * @Author 安羽兮
+     * @Description 通过id查找
+     * @Date 13:42 2020/7/16
+     * @Param [id]
+     * @Return com.explore.common.ServerResponse
+     **/
+    @GetMapping("/{id:\\d+}")
+    public ServerResponse getById(@PathVariable("id") Long id) {
+        User user = userService.getById(id);
+        if (null != user) {
+            user.setPassword("");
+            return ServerResponse.createBySuccess(user);
+        } else {
+            return ServerResponse.createByError();
+        }
+    }
 
     @DeleteMapping("/delete/{user_id:\\d+}")
     public ServerResponse delete(@PathVariable("user_id") Long userId) {

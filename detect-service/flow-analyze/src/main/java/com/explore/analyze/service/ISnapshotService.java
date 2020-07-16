@@ -1,6 +1,9 @@
 package com.explore.analyze.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.explore.analyze.form.SnapshotQuery;
+import com.explore.analyze.vo.SnapshotVo;
 import com.explore.common.database.Snapshot;
 
 /**
@@ -11,4 +14,5 @@ import com.explore.common.database.Snapshot;
  * @Version 1.0
  **/
 public interface ISnapshotService extends IService<Snapshot> {
+    Page<SnapshotVo> pageByQuery(SnapshotQuery query);
 }

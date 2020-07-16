@@ -14,24 +14,26 @@ import java.time.LocalDateTime;
 @Data
 public class FlowQuery {
 
-    // 一天内
+    // 天
     public static final Integer DAY = 1;
 
-    // 一周内
+    // 周
     public static final Integer WEEK = 2;
 
-    // 一月内
+    // 月
     public static final Integer MONTH = 3;
 
     private Long cameraId;
 
     /**
      * type值含义
-     * WEEK：一天内人流量(默认)
-     * WEEK：一周内人流量
-     * MONTH：一月内人流量
+     * WEEK：num天内人流量(默认)
+     * WEEK：num周内人流量
+     * MONTH：num月内人流量
      **/
     private Integer type = DAY;
+
+    private Integer num = 1;        // 默认为1
 
     private LocalDateTime beginTime;
 

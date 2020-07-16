@@ -1,5 +1,6 @@
 package com.explore.vo;
 
+import com.explore.entity.User;
 import lombok.Data;
 
 import java.util.List;
@@ -12,9 +13,7 @@ import java.util.List;
  * @Version 1.0
  **/
 @Data
-public class UserVo {
-
-    String username;
+public class UserVo extends User {
 
     String token;
 

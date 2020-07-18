@@ -30,4 +30,8 @@ public interface IUserService extends IService<User> {
     String flushToken();
 
     String flushToken(@NotNull String token);
+
+    void updateUserRoles(UserVo userVo);
+
+    ServerResponse updateByUserVo(UserVo userVo);
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.explore.authentication.JWTUtil;
 import com.explore.common.Const;
 import com.explore.common.ServerResponse;
+import com.explore.entity.Role;
 import com.explore.entity.User;
 import com.explore.form.ChangePassword;
 import com.explore.form.UserQuery;
@@ -105,12 +106,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!StringUtils.isEmpty(query.getUsername())) {
             queryWrapper.eq(User::getUsername, query.getUsername());
         }
-        Page<UserVo> data = page(page, queryWrapper);
+        Page data = page(page, queryWrapper);
         List<UserVo> userVos = new ArrayList<>();
         data.getRecords().stream().forEach(user -> {
             UserVo userVo = new UserVo();
             BeanUtils.copyProperties(user, userVo);
-            List roles = roleService.getRoles(user.getId());
+            List roles = roleService.getRoles(((User) user).getId());
             userVo.setRoles(roles);
             userVo.setPassword("");
             userVos.add(userVo);
@@ -137,6 +138,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 使用用户id重新注册token, 使用用户密码加密
         String newToken = JWTUtil.encryptToken(JWTUtil.sign(user.getId().toString(), user.getPassword()));
         return newToken;
+    }
+
+    @Override
+    public ServerResponse updateByUserVo(UserVo userVo) {
+        User user = new User();
+        BeanUtils.copyProperties(userVo, user);
+        User u = getById(user.getId());
+        if (null != u) {
+            user.setPassword(u.getPassword());
+            Boolean result = saveOrUpdate(user);
+            if (result) {
+                // 更新用户角色信息
+                if (userVo.getRoles() != null && userVo.getRoles().size() > 0)
+                    this.updateUserRoles(userVo);
+                return ServerResponse.createBySuccess("用户信息更新成功");
+            }
+        }
+        return ServerResponse.createByErrorMessage("用户信息更新失败");
+    }
+
+
+    @Override
+    public void updateUserRoles(@NotNull UserVo userVo) {
+        List<String> roles = new ArrayList<>();
+        List<String> oldRoles = roleService.getRoles(userVo.getId());
+        List<String> newRoles = userVo.getRoles();
+
+        roles.add(Const.USER);
+        roles.add(Const.ADMIN);
+        oldRoles.forEach(role -> {
+            if (!newRoles.contains(role)) {       // 需要移除该角色
+                LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper();
+                queryWrapper.eq(Role::getUserId, userVo.getId())
+                        .eq(Role::getRole, role);
+                roleService.remove(queryWrapper);
+            }
+        });
+        newRoles.forEach(role -> {
+            if (roles.contains(role) && !oldRoles.contains(role)) {       // 需要添加该角色
+                Role r = new Role();
+                r.setUserId(userVo.getId());
+                r.setRole(role);
+                roleService.save(r);
+            }
+        });
+        return;
     }
 
     /**

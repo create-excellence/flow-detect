@@ -5,6 +5,7 @@ import com.explore.entity.User;
 import com.explore.form.ChangePassword;
 import com.explore.form.UserQuery;
 import com.explore.service.IUserService;
+import com.explore.vo.UserVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -54,7 +55,7 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/list")
-    public ServerResponse list(@RequestBody UserQuery query) {
+    public ServerResponse list(UserQuery query) {
         return ServerResponse.createBySuccess(userService.pageByQuery(query));
     }
 
@@ -106,13 +107,17 @@ public class UserController {
      * @Return com.explore.common.ServerResponse
      **/
     @PutMapping("/update")
-    public ServerResponse update(@NotNull @RequestBody User user) {
-        Boolean result = userService.saveOrUpdate(user);
-        if (result) {
-            return ServerResponse.createBySuccess("用户信息更新成功");
-        } else {
-            return ServerResponse.createByErrorMessage("用户信息更新失败");
-        }
+    public ServerResponse update(@NotNull @RequestBody UserVo userVo) {
+        return userService.updateByUserVo(userVo);
+//        User u = userService.getById(user.getId());
+//        if (null != u) {
+//            user.setPassword(u.getPassword());
+//            Boolean result = userService.saveOrUpdate(user);
+//            if (result) {
+//                return ServerResponse.createBySuccess("用户信息更新成功");
+//            }
+//        }
+//        return ServerResponse.createByErrorMessage("用户信息更新失败");
     }
 
 

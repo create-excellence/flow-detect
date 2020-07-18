@@ -34,7 +34,7 @@ public class SnapshotController {
      * @Return com.explore.common.ServerResponse
      **/
     @PostMapping("/add")
-    public ServerResponse add(Snapshot snapshot) {
+    public ServerResponse add(@RequestBody Snapshot snapshot) {
         // todo 保存上传的快照
         Boolean result = snapshotService.saveOrUpdate(snapshot);
         if (result) {
@@ -55,7 +55,7 @@ public class SnapshotController {
     }
 
     @PutMapping("/update")
-    public ServerResponse update(@NotNull Snapshot snapshot) {
+    public ServerResponse update(@NotNull @RequestBody Snapshot snapshot) {
         Boolean result = snapshotService.saveOrUpdate(snapshot);
         if (result) {
             return ServerResponse.createBySuccess("更新成功");

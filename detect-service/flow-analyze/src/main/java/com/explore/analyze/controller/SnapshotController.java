@@ -4,7 +4,6 @@ import com.explore.analyze.form.SnapshotQuery;
 import com.explore.analyze.service.ISnapshotService;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Snapshot;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import javax.validation.constraints.NotNull;
  * @Date 2020/7/1518:06
  * @Version 1.0
  **/
-@Controller
+@RestController
 @RequestMapping("/snapshot")
 public class SnapshotController {
 

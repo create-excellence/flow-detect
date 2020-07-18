@@ -158,7 +158,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return ServerResponse.createByErrorMessage("用户信息更新失败");
     }
 
-
+    /**
+     * @Author 安羽兮
+     * @Description 通过传入的UserVo更新对应用户的角色
+     * @Date 12:48 2020/7/18
+     * @Param [userVo]
+     * @Return void
+     **/
     @Override
     public void updateUserRoles(@NotNull UserVo userVo) {
         List<String> roles = new ArrayList<>();

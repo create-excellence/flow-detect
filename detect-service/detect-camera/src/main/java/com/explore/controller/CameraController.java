@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
  */
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/camera")
+@RequestMapping("/camera")
 public class CameraController {
 
     private ICameraService cameraService;
@@ -81,7 +81,7 @@ public class CameraController {
     public ServerResponse getList(@RequestParam(required = false,defaultValue = "1")Integer page,
                                       @RequestParam(required = false,defaultValue = "10")Integer limit){
         //TODO 获取UserId
-        Integer userId =1;
+        Integer userId =userUtils.getUserId();
 
         return ServerResponse.createBySuccess(
                 cameraService.page(

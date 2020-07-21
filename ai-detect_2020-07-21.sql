@@ -11,7 +11,7 @@
  Target Server Version : 50725
  File Encoding         : 65001
 
- Date: 15/07/2020 19:07:08
+ Date: 21/07/2020 16:13:27
 */
 
 SET NAMES utf8mb4;
@@ -35,19 +35,32 @@ CREATE TABLE `camera`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of camera
+-- ----------------------------
+INSERT INTO `camera` VALUES (1, 'test', 'source-test', '1221', 1, 'pos', NULL, NULL, 1, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for flow
 -- ----------------------------
 DROP TABLE IF EXISTS `flow`;
 CREATE TABLE `flow`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `flow` int(11) NULL DEFAULT NULL COMMENT '人流量(统计方式为取1秒内人流量的平均数据)',
   `camera_id` bigint(20) NULL DEFAULT NULL,
   `current_time` datetime(0) NULL DEFAULT NULL COMMENT '当前记录时间点',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of flow
+-- ----------------------------
+INSERT INTO `flow` VALUES (1, 10, 1, '2020-07-21 14:23:46');
+INSERT INTO `flow` VALUES (2, 25, 1, '2020-07-21 14:41:11');
+INSERT INTO `flow` VALUES (3, 30, 1, '2020-07-11 12:56:15');
+INSERT INTO `flow` VALUES (4, 13, 1, '2020-07-21 15:05:48');
 
 -- ----------------------------
 -- Table structure for organization
@@ -60,7 +73,12 @@ CREATE TABLE `organization`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of organization
+-- ----------------------------
+INSERT INTO `organization` VALUES (1, 'org', 'des', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for role
@@ -73,12 +91,14 @@ CREATE TABLE `role`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
 INSERT INTO `role` VALUES (1, 1, 'admin', NULL, NULL);
+INSERT INTO `role` VALUES (2, 2, 'user', NULL, NULL);
+INSERT INTO `role` VALUES (4, 2, 'admin', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for snapshot
@@ -93,7 +113,12 @@ CREATE TABLE `snapshot`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of snapshot
+-- ----------------------------
+INSERT INTO `snapshot` VALUES (1, '/test/1.jpg', 'info', 1, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for user
@@ -107,13 +132,14 @@ CREATE TABLE `user`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '123456', NULL, NULL, NULL);
-INSERT INTO `user` VALUES (2, 'user', '123456', NULL, NULL, NULL);
+INSERT INTO `user` VALUES (1, 'admin', '123456', 0, NULL, NULL);
+INSERT INTO `user` VALUES (2, 'user', '123456', 1, NULL, NULL);
+INSERT INTO `user` VALUES (3, 'test', '123456', 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for video
@@ -129,5 +155,11 @@ CREATE TABLE `video`  (
   `end_time` datetime(0) NULL DEFAULT NULL COMMENT '视频结束时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- View structure for flow_hour
+-- ----------------------------
+DROP VIEW IF EXISTS `flow_hour`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `flow_hour` AS select `f`.`camera_id` AS `camera_id`,cast(`f`.`current_time` as date) AS `date`,hour(`f`.`current_time`) AS `hour`,sum(`f`.`flow`) AS `hour_flow` from `flow` `f` group by `f`.`camera_id`,cast(`f`.`current_time` as date),hour(`f`.`current_time`) order by cast(`f`.`current_time` as date),hour(`f`.`current_time`);
 
 SET FOREIGN_KEY_CHECKS = 1;

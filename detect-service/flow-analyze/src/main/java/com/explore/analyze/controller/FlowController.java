@@ -3,9 +3,8 @@ package com.explore.analyze.controller;
 import com.explore.analyze.form.FlowQuery;
 import com.explore.analyze.service.IFlowService;
 import com.explore.common.ServerResponse;
-import com.explore.common.database.Flow;
+import com.explore.common.database.FlowHour;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,9 +35,11 @@ public class FlowController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/flow")
-    public ServerResponse flow(@RequestBody FlowQuery query) {
-        List<Flow> flows = flowService.getFlowByQuery(query);
-        return ServerResponse.createBySuccess(flows);
+    public ServerResponse flow(FlowQuery query) {
+        List<FlowHour> flows = flowService.getFlowByQuery(query);
+        if (null != flows)
+            return ServerResponse.createBySuccess(flows);
+        return ServerResponse.createByError();
     }
 
     // todo 分析人流量功能

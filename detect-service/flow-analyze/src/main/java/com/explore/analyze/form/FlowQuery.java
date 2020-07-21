@@ -2,6 +2,7 @@ package com.explore.analyze.form;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -23,6 +24,7 @@ public class FlowQuery {
     // 月
     public static final Integer MONTH = 3;
 
+    @NotNull(message = "摄像头id不能为空")
     private Long cameraId;
 
     /**

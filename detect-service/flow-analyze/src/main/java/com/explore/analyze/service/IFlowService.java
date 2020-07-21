@@ -3,6 +3,7 @@ package com.explore.analyze.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.explore.analyze.form.FlowQuery;
 import com.explore.common.database.Flow;
+import com.explore.common.database.FlowHour;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ import java.util.List;
  * @Version 1.0
  **/
 public interface IFlowService extends IService<Flow> {
-    List<Flow> getFlowByQuery(FlowQuery query);
+    List<FlowHour> getFlowByQuery(FlowQuery query);
 }

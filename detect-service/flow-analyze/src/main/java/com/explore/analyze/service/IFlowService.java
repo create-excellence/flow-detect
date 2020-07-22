@@ -15,5 +15,8 @@ import java.util.List;
  * @Version 1.0
  **/
 public interface IFlowService extends IService<Flow> {
+
+    List<FlowHour> getPeriodFlowByQuery(FlowQuery query);
+
     List<FlowHour> getFlowByQuery(FlowQuery query);
 }

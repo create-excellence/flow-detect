@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.explore.analyze.mappers.FlowHourMapper;
 import com.explore.analyze.service.IFlowHourService;
 import com.explore.common.database.FlowHour;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @Date 2020/7/2115:11
  * @Version 1.0
  **/
+@Service
 public class FlowHourServiceImpl extends ServiceImpl<FlowHourMapper, FlowHour> implements IFlowHourService {
 
     @Override

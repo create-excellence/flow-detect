@@ -35,8 +35,8 @@ public class FlowController {
      * @Return com.explore.common.ServerResponse
      **/
     @GetMapping("/flow")
-    public ServerResponse flow(FlowQuery query) {
-        List<FlowHour> flows = flowService.getFlowByQuery(query);
+    public ServerResponse getFlow(FlowQuery query) {
+        List<FlowHour> flows = flowService.getPeriodFlowByQuery(query);
         if (null != flows)
             return ServerResponse.createBySuccess(flows);
         return ServerResponse.createByError();

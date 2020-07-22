@@ -11,7 +11,7 @@
  Target Server Version : 50725
  File Encoding         : 65001
 
- Date: 21/07/2020 16:13:27
+ Date: 22/07/2020 21:41:00
 */
 
 SET NAMES utf8mb4;
@@ -25,10 +25,13 @@ CREATE TABLE `camera`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '摄像头编号',
   `user_id` int(11) NULL DEFAULT NULL,
+  `push_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `position` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '摄像头具体放置地点',
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `warning` int(11) NULL DEFAULT NULL,
   `status` int(11) NULL DEFAULT NULL,
   `organization_id` int(11) NULL DEFAULT NULL COMMENT '所属组织',
@@ -40,7 +43,7 @@ CREATE TABLE `camera`  (
 -- ----------------------------
 -- Records of camera
 -- ----------------------------
-INSERT INTO `camera` VALUES (1, 'test', 'source-test', '1221', 1, 'pos', NULL, NULL, 1, 1, NULL, NULL);
+INSERT INTO `camera` VALUES (1, 'test', 'source-test', NULL, '1221', 1, NULL, 'pos', NULL, NULL, NULL, 1, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for flow
@@ -49,18 +52,22 @@ DROP TABLE IF EXISTS `flow`;
 CREATE TABLE `flow`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `flow` int(11) NULL DEFAULT NULL COMMENT '人流量(统计方式为取1秒内人流量的平均数据)',
+  `photo_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `detect_status` int(255) NULL DEFAULT NULL,
   `camera_id` bigint(20) NULL DEFAULT NULL,
   `current_time` datetime(0) NULL DEFAULT NULL COMMENT '当前记录时间点',
+  `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of flow
 -- ----------------------------
-INSERT INTO `flow` VALUES (1, 10, 1, '2020-07-21 14:23:46');
-INSERT INTO `flow` VALUES (2, 25, 1, '2020-07-21 14:41:11');
-INSERT INTO `flow` VALUES (3, 30, 1, '2020-07-11 12:56:15');
-INSERT INTO `flow` VALUES (4, 13, 1, '2020-07-21 15:05:48');
+INSERT INTO `flow` VALUES (1, 10, NULL, NULL, 1, '2020-07-21 14:23:46', NULL);
+INSERT INTO `flow` VALUES (2, 25, NULL, NULL, 1, '2020-07-21 14:41:11', NULL);
+INSERT INTO `flow` VALUES (3, 30, NULL, NULL, 1, '2020-07-11 12:56:15', NULL);
+INSERT INTO `flow` VALUES (4, 13, NULL, NULL, 1, '2020-07-21 23:00:00', NULL);
+INSERT INTO `flow` VALUES (5, 36, NULL, NULL, 1, '2020-07-22 23:59:27', NULL);
 
 -- ----------------------------
 -- Table structure for organization

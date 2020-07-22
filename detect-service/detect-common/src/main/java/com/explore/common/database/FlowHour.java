@@ -13,7 +13,7 @@ import java.time.LocalDate;
  **/
 @Data
 public class FlowHour {
-    private Integer cameraId;
+    private Long cameraId;
 
     private LocalDate date;
 

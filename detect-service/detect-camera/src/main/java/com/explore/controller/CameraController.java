@@ -95,4 +95,16 @@ public class CameraController {
              cameraService.removeById(id));
     }
 
+    /**
+     * 获得所有摄像头集合
+     */
+    @GetMapping("/list/all")
+    public ServerResponse getCameras(@RequestParam(required = false,defaultValue = "1")Integer page,
+                                  @RequestParam(required = false,defaultValue = "10")Integer limit){
+
+        return ServerResponse.createBySuccess(
+                cameraService.page(
+                        new Page<>(page,limit),
+                        new QueryWrapper<Camera>().eq("status",1).orderByDesc("id")));
+    }
 }

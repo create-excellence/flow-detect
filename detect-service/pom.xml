@@ -18,6 +18,7 @@
         <module>detect-user</module>
         <module>detect-flow</module>
         <module>detect-camera</module>
+        <module>flow-analyze</module>
     </modules>
 
 </project>

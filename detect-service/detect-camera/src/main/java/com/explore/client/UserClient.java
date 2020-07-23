@@ -2,7 +2,10 @@ package com.explore.client;
 
 import com.explore.common.database.Camera;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -10,7 +13,8 @@ import java.util.Map;
  * @author PinTeh
  * @date 2020/6/22
  */
-@FeignClient(name = "detect-user",fallback = UserClientHystrix.class)
+@Primary
+@FeignClient(value = "detect-user")
 public interface UserClient {
 
     /**
@@ -18,5 +22,5 @@ public interface UserClient {
      * @return Camera
      */
     @GetMapping("/user/getUserId")
-    Map<String,Integer> getById();
+    Map getById(@RequestParam("token") String token);
 }

@@ -10,7 +10,6 @@ import com.explore.service.IRoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  **/
 @Service
-public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements IRoleService {
+public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
     @Override
     public List<String> getRoles(Long userId) {
@@ -30,11 +29,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper,Role> implements IRo
         Page<Role> page = new Page();
         page.setTotal(10);
         List<Role> roles = this.page(page, queryWrapper).getRecords();
-        if(roles.size() == 0){      // 用户身份默认为user
+        if (roles.size() == 0) {      // 用户身份默认为user
             Role r = new Role();
             r.setRole(Const.USER);
             roles.add(r);
         }
         return roles.stream().map(role -> role.getRole()).collect(Collectors.toList());
     }
+
+
 }

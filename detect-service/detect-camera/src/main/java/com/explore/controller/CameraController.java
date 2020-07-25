@@ -56,7 +56,6 @@ public class CameraController {
         camera.setId(id);
         camera.setToken(null);
         camera.setUserId(null);
-        camera.setStatus(null);
         camera.setUpdateTime(LocalDateTime.now());
 
         return ServerResponse.createBySuccess(cameraService.saveOrUpdate(camera));
@@ -105,6 +104,6 @@ public class CameraController {
         return ServerResponse.createBySuccess(
                 cameraService.page(
                         new Page<>(page,limit),
-                        new QueryWrapper<Camera>().eq("status",1).orderByDesc("id")));
+                        new QueryWrapper<Camera>().eq("status",0).orderByDesc("id")));
     }
 }

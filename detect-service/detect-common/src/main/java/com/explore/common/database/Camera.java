@@ -33,6 +33,8 @@ public class Camera implements Serializable {
 
     private String pushUrl;
 
+    private String playUrl;
+
     private String cover;
 
     private String ip;

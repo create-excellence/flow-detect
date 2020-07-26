@@ -38,6 +38,7 @@ CREATE TABLE `camera` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
+
 -- ----------------------------
 -- Records of camera
 -- ----------------------------
@@ -149,3 +150,15 @@ CREATE TABLE `video` (
 -- ----------------------------
 -- Records of video
 -- ----------------------------
+
+DROP TABLE IF EXISTS `warning`;
+CREATE TABLE `warning`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `number` int(11) NULL DEFAULT NULL,
+  `warning` int(11) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `camera_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;

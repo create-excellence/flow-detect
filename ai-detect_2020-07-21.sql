@@ -53,7 +53,7 @@ CREATE TABLE `flow`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `flow` int(11) NULL DEFAULT NULL COMMENT '人流量(统计方式为取1秒内人流量的平均数据)',
   `photo_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `detect_status` int(255) NULL DEFAULT NULL,
+  `detect_status` int(11) NULL DEFAULT NULL,
   `camera_id` bigint(20) NULL DEFAULT NULL,
   `current_time` datetime(0) NULL DEFAULT NULL COMMENT '当前记录时间点',
   `create_time` datetime(0) NULL DEFAULT NULL,
@@ -168,5 +168,18 @@ CREATE TABLE `video`  (
 -- ----------------------------
 DROP VIEW IF EXISTS `flow_hour`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `flow_hour` AS select `f`.`camera_id` AS `camera_id`,cast(`f`.`current_time` as date) AS `date`,hour(`f`.`current_time`) AS `hour`,sum(`f`.`flow`) AS `hour_flow` from `flow` `f` group by `f`.`camera_id`,cast(`f`.`current_time` as date),hour(`f`.`current_time`) order by cast(`f`.`current_time` as date),hour(`f`.`current_time`);
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+DROP TABLE IF EXISTS `warning`;
+CREATE TABLE `warning`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `number` int(11) NULL DEFAULT NULL,
+  `warning` int(11) NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `camera_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

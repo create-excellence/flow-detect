@@ -4,7 +4,9 @@ import com.explore.analyze.form.SnapshotQuery;
 import com.explore.analyze.service.ISnapshotService;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Snapshot;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
@@ -92,4 +94,23 @@ public class SnapshotController {
         return ServerResponse.createBySuccess(snapshotService.pageByQuery(query));
     }
 
+    /**
+     * @Author 安羽兮
+     * @Description 上传图片
+     * @Date 15:26 2020/7/26
+     * @Param [file]
+     * @Return com.explore.common.ServerResponse
+     **/
+    @PostMapping("/upload")
+    public ServerResponse editMovieInfo(@RequestParam("file") MultipartFile file) {
+        return snapshotService.upload(file);
+    }
+
+    /**
+     * 显示单张图片
+     */
+    @GetMapping("/show/{fileName}")
+    public ResponseEntity showPhotos(@PathVariable("fileName") String fileName) {
+        return snapshotService.show(fileName);
+    }
 }

@@ -1,6 +1,8 @@
 package com.explore.common.database;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +15,7 @@ public class Flow {
 
     private Long id;
 
-    private Integer flow;
+    private Long flow;
 
     private Integer cameraId;
 
@@ -21,7 +23,11 @@ public class Flow {
 
     private Integer detectStatus;
 
-    private LocalDateTime currentTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime recordTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 }

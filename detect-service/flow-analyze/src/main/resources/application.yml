@@ -2,12 +2,21 @@ server:
   port: 7010
 
 spring:
+  uploadPath: D:\upload\
   application:
     name: flow-analyze
+  servlet:
+    multipart:
+      #单个数据的大小
+      max-file-size: 100MB
+      #总数据的大小
+      max-request-size: 100MB
+      enabled: true
+      file-size-threshold: 0
   datasource:
     username: root
-    password: huangpei120
-    url: jdbc:mysql://39.108.220.199:3306/ai-detect?characterEncoding=utf-8&serverTimezone=GMT%2b8
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/ai-detect?characterEncoding=utf-8&serverTimezone=GMT%2b8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:

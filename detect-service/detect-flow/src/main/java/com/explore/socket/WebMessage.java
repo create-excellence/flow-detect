@@ -3,6 +3,10 @@ package com.explore.socket;
 import com.alibaba.fastjson.JSON;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author PinTeh
  */
@@ -43,4 +47,13 @@ public class WebMessage {
         return webMessage;
     }
 
+    public static WebMessage createFlowMessage(String number, LocalDateTime now){
+        WebMessage webMessage = new WebMessage();
+        webMessage.setOp("MESSAGE");
+        Map<String,Object> map = new HashMap<>(2);
+        map.put("number",number);
+        map.put("now",now);
+        webMessage.setD(map);
+        return webMessage;
+    }
 }

@@ -9,6 +9,7 @@ import com.explore.common.database.Flow;
 import com.explore.common.database.Warning;
 import com.explore.servcie.IFlowService;
 import com.explore.servcie.IWarningService;
+import com.explore.socket.WebMessage;
 import com.explore.socket.WebSocketServer;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -72,7 +73,8 @@ public class FlowController {
             warningService.save(Warning.builder().number(flow.getFlow().intValue()).warning(camera.getWarning()).createTime(now).build());
             log.info(" warning => flow value : {}", flow.getFlow());
         }
-        webSocketServer.sendMessageToAll(String.valueOf(flow.getFlow()), String.valueOf(flow.getCameraId()));
+        webSocketServer.sendMessageToAll(String.valueOf(flow.getFlow())
+                , WebMessage.createFlowMessage(String.valueOf(flow.getCameraId()),LocalDateTime.now()).toJson());
     }
 
     /**

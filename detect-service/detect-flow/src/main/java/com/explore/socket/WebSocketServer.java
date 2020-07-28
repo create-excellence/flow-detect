@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @Component
-@ServerEndpoint(value = "/connect/{rid}")
+@ServerEndpoint(value = "/connect/{cid}")
 public class WebSocketServer {
 
     private static int onlineCount = 0;

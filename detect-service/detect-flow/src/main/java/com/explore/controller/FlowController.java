@@ -9,6 +9,7 @@ import com.explore.common.database.Flow;
 import com.explore.common.database.Warning;
 import com.explore.servcie.IFlowService;
 import com.explore.servcie.IWarningService;
+import com.explore.socket.WebSocketServer;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +44,13 @@ public class FlowController {
 
     private final IWarningService warningService;
 
-    public FlowController(IFlowService flowService, CameraClient cameraClient, IWarningService warningService) {
+    private final WebSocketServer webSocketServer;
+
+    public FlowController(IFlowService flowService, CameraClient cameraClient, IWarningService warningService, WebSocketServer webSocketServer) {
         this.flowService = flowService;
         this.cameraClient = cameraClient;
         this.warningService = warningService;
+        this.webSocketServer = webSocketServer;
     }
 
     /**
@@ -67,6 +71,7 @@ public class FlowController {
             warningService.save(Warning.builder().number(flow.getFlow()).warning(camera.getWarning()).createTime(now).build());
             log.info(" warning => flow value : {}",flow.getFlow());
         }
+        webSocketServer.sendMessageToAll(String.valueOf(flow.getFlow()), String.valueOf(flow.getCameraId()));
     }
 
     /**

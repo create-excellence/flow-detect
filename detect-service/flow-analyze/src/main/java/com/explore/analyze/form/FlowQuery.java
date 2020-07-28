@@ -1,8 +1,9 @@
 package com.explore.analyze.form;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -24,7 +25,7 @@ public class FlowQuery {
     // 月
     public static final Integer MONTH = 3;
 
-    @NotNull(message = "摄像头id不能为空")
+    //    @NotNull(message = "摄像头id不能为空")
     private Long cameraId;
 
     /**
@@ -37,7 +38,11 @@ public class FlowQuery {
 
     private Integer num = 1;        // 默认为1
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime beginTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime endTime = LocalDateTime.now();      // 默认当前时间
 }

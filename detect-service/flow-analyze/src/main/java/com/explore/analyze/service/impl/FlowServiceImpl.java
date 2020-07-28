@@ -11,6 +11,8 @@ import com.explore.common.database.FlowHour;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,6 +44,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
         LambdaQueryWrapper<FlowHour> queryWrapper = new LambdaQueryWrapper<>();
         if (query.getCameraId() != null && query.getCameraId() > 0) {
             queryWrapper.eq(FlowHour::getCameraId, query.getCameraId());
+        } else {
+            return null;
         }
         LocalDate beginDate = null;
         LocalDate endDate = query.getEndTime().toLocalDate();
@@ -57,6 +61,35 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
         queryWrapper.orderByAsc(FlowHour::getDate).orderByAsc(FlowHour::getHour);
         List<FlowHour> data = flowHourService.getBaseMapper().selectList(queryWrapper);
         return packageData(query, data);
+    }
+
+    @Override
+    public List<Flow> getAllFlowByQuery(FlowQuery query) {
+        LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();
+        if (query.getCameraId() != null && query.getCameraId() > 0) {
+            queryWrapper.eq(Flow::getCameraId, query.getCameraId());
+        } else {
+            return null;
+        }
+        LocalDateTime beginDate = null;
+        LocalDateTime endDate = query.getEndTime();
+        // 默认一周内人流量
+        if (null == query.getBeginTime()) {
+            query.setBeginTime(query.getEndTime().minusWeeks(query.getNum()));
+        }
+        beginDate = query.getBeginTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // LocalDateTime使用apply查询
+        // todo 加上这句无法查询到数据？？？
+//        queryWrapper.apply("UNIX_TIMESTAMP(current_time) <= UNIX_TIMESTAMP('" + formatter.format(endDate) + "')");
+        queryWrapper.apply("UNIX_TIMESTAMP(current_time) >= UNIX_TIMESTAMP('" + formatter.format(beginDate) + "')");
+        // 错误写法
+//        queryWrapper.le(Flow::getCurrentTime, endDate.toLocalDate());
+//        queryWrapper.ge(Flow::getCurrentTime, beginDate.toLocalDate());
+        // 按照日期排序
+        queryWrapper.orderByAsc(Flow::getRecordTime);
+        List<Flow> data = this.baseMapper.selectList(queryWrapper);
+        return data;
     }
 
     @Override
@@ -110,7 +143,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
             // 一天24小时
             for (int hour = 0; hour < 24; hour++) {
                 // 查询到的数据是按照日期, 小时排序
-                if (data.get(0).getDate().equals(beginDate) && data.get(0).getHour() == hour) {
+                if (!data.isEmpty() && data.get(0).getDate().equals(beginDate) && data.get(0).getHour() == hour) {
                     // 数据库中查询到了对应的FlowHour
                     result.add(data.get(0));
                     data.remove(0);

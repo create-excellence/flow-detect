@@ -3,6 +3,7 @@ package com.explore.analyze.controller;
 import com.explore.analyze.form.FlowQuery;
 import com.explore.analyze.service.IFlowService;
 import com.explore.common.ServerResponse;
+import com.explore.common.database.Flow;
 import com.explore.common.database.FlowHour;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,21 @@ public class FlowController {
     @GetMapping("/flow")
     public ServerResponse getFlow(FlowQuery query) {
         List<FlowHour> flows = flowService.getPeriodFlowByQuery(query);
+        if (null != flows)
+            return ServerResponse.createBySuccess(flows);
+        return ServerResponse.createByError();
+    }
+
+    /**
+     * @Author 安羽兮
+     * @Description 获取指定时间内原生人流量数据
+     * @Date 8:29 2020/7/26
+     * @Param [query]
+     * @Return com.explore.common.ServerResponse
+     **/
+    @GetMapping("/flow-all")
+    public ServerResponse getAllFlow(FlowQuery query) {
+        List<Flow> flows = flowService.getAllFlowByQuery(query);
         if (null != flows)
             return ServerResponse.createBySuccess(flows);
         return ServerResponse.createByError();

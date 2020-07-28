@@ -10,6 +10,7 @@
     <artifactId>flow-analyze</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>flow-analyze</name>
+    <packaging>jar</packaging>
     <description>flow analyze</description>
 
     <properties>

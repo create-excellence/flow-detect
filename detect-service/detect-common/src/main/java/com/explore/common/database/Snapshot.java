@@ -16,13 +16,19 @@ public class Snapshot {
 
     private Long id;
 
+//    private Long flow;
+
     private Long flowId;
+
+    private Long cameraId;
 
     private String info;
 
     private Integer status;
 
     private String path;
+
+    private LocalDateTime recordTime;
 
     private LocalDateTime createTime;
 

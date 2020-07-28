@@ -2,8 +2,17 @@ server:
   port: 7010
 
 spring:
+  uploadPath: D:\upload\
   application:
     name: flow-analyze
+  servlet:
+    multipart:
+      #单个数据的大小
+      max-file-size: 100MB
+      #总数据的大小
+      max-request-size: 100MB
+      enabled: true
+      file-size-threshold: 0
   datasource:
     username: root
     password: huangpei120

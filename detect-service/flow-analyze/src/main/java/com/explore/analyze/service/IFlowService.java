@@ -18,5 +18,7 @@ public interface IFlowService extends IService<Flow> {
 
     List<FlowHour> getPeriodFlowByQuery(FlowQuery query);
 
+    List<Flow> getAllFlowByQuery(FlowQuery query);
+
     List<FlowHour> getFlowByQuery(FlowQuery query);
 }

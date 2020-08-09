@@ -8,4 +8,5 @@ import com.explore.common.database.Flow;
  * @date 2020/6/22
  */
 public interface IFlowService extends IService<Flow> {
+    void saveData(Flow flow);
 }

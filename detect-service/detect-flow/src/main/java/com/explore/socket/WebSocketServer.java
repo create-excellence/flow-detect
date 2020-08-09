@@ -75,6 +75,9 @@ public class WebSocketServer {
 
     public void sendMessageToAll(String cid, String message)  {
         Set<Session> sessions = MAP.get(cid);
+        if (sessions==null){
+            return;
+        }
         log.info("[发送消息] 当前连接数:" + sessions.size());
         for (Session connect : sessions) {
             try {

@@ -2,22 +2,11 @@ package com.explore.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.explore.client.CameraClient;
 import com.explore.common.ServerResponse;
-import com.explore.common.database.Camera;
 import com.explore.common.database.Flow;
-import com.explore.common.database.Warning;
 import com.explore.servcie.IFlowService;
-import com.explore.servcie.IWarningService;
-import com.explore.socket.WebMessage;
-import com.explore.socket.WebSocketServer;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author PinTeh
@@ -28,31 +17,12 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/v1/flow")
 public class FlowController {
 
-    private static Cache<String, String> cache;
-
-    static {
-        cache = CacheBuilder.newBuilder()
-                .maximumSize(200)
-                .expireAfterWrite(2, TimeUnit.MINUTES)
-                .concurrencyLevel(10)
-                .recordStats()
-                .build();
-    }
-
     private final IFlowService flowService;
 
-    private final CameraClient cameraClient;
-
-    private final IWarningService warningService;
-
-    private final WebSocketServer webSocketServer;
-
-    public FlowController(IFlowService flowService, CameraClient cameraClient, IWarningService warningService, WebSocketServer webSocketServer) {
+    public FlowController(IFlowService flowService) {
         this.flowService = flowService;
-        this.cameraClient = cameraClient;
-        this.warningService = warningService;
-        this.webSocketServer = webSocketServer;
     }
+
 
     /**
      * 保存检测数据
@@ -61,20 +31,7 @@ public class FlowController {
      */
     @PostMapping
     public void save(@RequestBody Flow flow) {
-        flowService.save(flow);
-        Camera camera = cameraClient.getById(flow.getCameraId()).getData();
-        if (flow.getFlow().compareTo(camera.getWarning().longValue()) > 0) {
-            String value = cache.getIfPresent(String.valueOf(camera.getId()));
-            if (value != null) {
-                return;
-            }
-            LocalDateTime now = LocalDateTime.now();
-            cache.put(String.valueOf(camera.getId()), now.toString());
-            warningService.save(Warning.builder().number(flow.getFlow().intValue()).warning(camera.getWarning()).createTime(now).build());
-            log.info(" warning => flow value : {}", flow.getFlow());
-        }
-        webSocketServer.sendMessageToAll(String.valueOf(flow.getFlow())
-                , WebMessage.createFlowMessage(String.valueOf(flow.getCameraId()),LocalDateTime.now()).toJson());
+        flowService.saveData(flow);
     }
 
     /**

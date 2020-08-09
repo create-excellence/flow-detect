@@ -70,6 +70,7 @@ public class Camera implements Serializable {
     public static Camera invalid(){
         Camera camera = new Camera();
         camera.setId(-1);
+        camera.setWarning(-1);
         camera.setCode("");
         return camera;
     }

@@ -23,8 +23,8 @@ public class WarningController {
         this.warningService = warningService;
     }
 
-    @GetMapping("/{cid}")
-    public ServerResponse list(@PathVariable("cid")Integer cid, @RequestParam(required = false,defaultValue = "1")Integer page, @RequestParam(required = false,defaultValue = "10")Integer limit){
+    @GetMapping
+    public ServerResponse list(Integer cid, @RequestParam(required = false,defaultValue = "1")Integer page, @RequestParam(required = false,defaultValue = "10")Integer limit){
         Page<Warning> warningPage = warningService.page(new Page<>(page,limit),new QueryWrapper<Warning>().eq("camera_id",cid));
         return ServerResponse.createBySuccess(warningPage);
     }

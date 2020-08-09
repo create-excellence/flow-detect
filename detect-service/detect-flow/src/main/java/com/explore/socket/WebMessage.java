@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,9 +51,10 @@ public class WebMessage {
     public static WebMessage createFlowMessage(String number, LocalDateTime now){
         WebMessage webMessage = new WebMessage();
         webMessage.setOp("MESSAGE");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Map<String,Object> map = new HashMap<>(2);
         map.put("number",number);
-        map.put("now",now);
+        map.put("now",df.format(now));
         webMessage.setD(map);
         return webMessage;
     }

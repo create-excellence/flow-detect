@@ -19,7 +19,12 @@ zuul:
     api-analyze:
       path: /flow-analyze/**
       service-id: flow-analyze
-
+    api-flow:
+      path: /detect-flow/**
+      service-id: detect-flow
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
 
 eureka:
   client:

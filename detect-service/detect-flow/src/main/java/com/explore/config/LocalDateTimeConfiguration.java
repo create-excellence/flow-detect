@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * @author PinTeh
  * @date 2020/7/17
  */
-@Configuration
+//@Configuration
 public class LocalDateTimeConfiguration {
 
     @Value("${spring.jackson.date-format:yyyy-MM-dd HH:mm:ss}")

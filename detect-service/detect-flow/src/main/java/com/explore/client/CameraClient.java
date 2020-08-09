@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Primary
 //@FeignClient(value = "detect-camera",fallback = CameraClientHystrix.class)
-@FeignClient(value = "detect-camera")
+@FeignClient("detect-camera")
 public interface CameraClient {
 
     /**
@@ -21,6 +21,6 @@ public interface CameraClient {
      * @param id cid
      * @return Camera
      */
-    @GetMapping("/api/v1/camera")
+    @GetMapping("/camera")
     ServerResponse<Camera> getById(@RequestParam(value = "id") Integer id);
 }

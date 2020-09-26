@@ -90,6 +90,6 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
             log.info(" 异常人流量 : warning => flow value : {}", flow.getFlow());
         }
         webSocketServer.sendMessageToAll(String.valueOf(flow.getCameraId())
-                , WebMessage.createFlowMessage(String.valueOf(flow.getCameraId()),LocalDateTime.now()).toJson());
+                , WebMessage.createFlowMessage(String.valueOf(flow.getFlow()),LocalDateTime.now()).toJson());
     }
 }

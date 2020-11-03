@@ -26,6 +26,7 @@ zuul:
     connect-timeout-millis: 10000
     socket-timeout-millis: 60000
 
+
 eureka:
   client:
     service-url:

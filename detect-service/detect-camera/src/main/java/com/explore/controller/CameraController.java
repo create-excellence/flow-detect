@@ -3,13 +3,11 @@ package com.explore.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.explore.client.UserClient;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import com.explore.service.ICameraService;
 import com.explore.until.UserUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -95,15 +93,17 @@ public class CameraController {
     }
 
     /**
-     * 获得所有摄像头集合
+     * 获得所有的摄像头集合
      */
     @GetMapping("/list/all")
     public ServerResponse getCameras(@RequestParam(required = false,defaultValue = "1")Integer page,
-                                  @RequestParam(required = false,defaultValue = "10")Integer limit){
-
+                                  @RequestParam(required = false,defaultValue = "10")Integer limit , Integer userId ){
+       if(userId== null){
+           userId =  userUtils.getUserId();
+       }
         return ServerResponse.createBySuccess(
                 cameraService.page(
                         new Page<>(page,limit),
-                        new QueryWrapper<Camera>().eq("status",0).orderByDesc("id")));
+                        new QueryWrapper<Camera>().eq("user_id",userId).orderByDesc("id")));
     }
 }

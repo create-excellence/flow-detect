@@ -3,6 +3,7 @@ package com.explore.analyze.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.explore.analyze.client.CameraClient;
 import com.explore.analyze.form.SnapshotQuery;
 import com.explore.analyze.mappers.SnapshotMapper;
 import com.explore.analyze.service.IFlowService;
@@ -11,7 +12,6 @@ import com.explore.analyze.vo.SnapshotVo;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Flow;
 import com.explore.common.database.Snapshot;
-import com.explore.service.ICameraService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
@@ -39,12 +39,14 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
 
     private final IFlowService flowService;
 
-    private final ICameraService cameraService;
+    private final CameraClient cameraClient;
 
-    public SnapshotServiceImpl(ResourceLoader resourceLoader, IFlowService flowService, ICameraService cameraService) {
+
+    public SnapshotServiceImpl(ResourceLoader resourceLoader, IFlowService flowService, CameraClient cameraClient) {
         this.resourceLoader = resourceLoader;
         this.flowService = flowService;
-        this.cameraService = cameraService;
+        this.cameraClient = cameraClient;
+
     }
 
 
@@ -60,7 +62,7 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
             Flow flow = flowService.getById(snapshotVo.getFlowId());
             snapshotVo.setFlow(flow);
             if (null != flow)
-                snapshotVo.setCamera(cameraService.getById(flow.getCameraId()));
+                snapshotVo.setCamera(cameraClient.getById(flow.getCameraId()).getData());
             // 满足筛选条件才加入集合
             if (null == query.getFlow() || flow.getFlow().intValue() >= query.getFlow().intValue()) {
                 if (null == query.getOrganizationId() || snapshotVo.getCamera().getOrganizationId().equals(query.getOrganizationId()))

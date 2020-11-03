@@ -6,6 +6,7 @@ import com.explore.common.ServerResponse;
 import com.explore.common.database.Flow;
 import com.explore.servcie.IFlowService;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -19,11 +20,10 @@ public class FlowController {
 
     private final IFlowService flowService;
 
+
     public FlowController(IFlowService flowService) {
         this.flowService = flowService;
     }
-
-
     /**
      * 保存检测数据
      *
@@ -40,7 +40,7 @@ public class FlowController {
      * @return ServerResponse
      */
     @GetMapping
-    public ServerResponse get(@RequestParam("cid") Integer cid) {
+    public ServerResponse<Flow> get(@RequestParam("cid") Integer cid) {
         Flow flow = flowService.getOne(new QueryWrapper<Flow>().eq("camera_id", cid).orderByDesc("id").last("limit 0,1"));
         return ServerResponse.createBySuccess(flow);
     }

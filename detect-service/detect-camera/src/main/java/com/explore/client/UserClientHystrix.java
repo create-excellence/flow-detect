@@ -1,4 +1,4 @@
-//package com.explore.client;
+package com.explore.client;//package com.explore.client;
 //
 //import com.explore.common.database.Camera;
 //import org.springframework.stereotype.Component;

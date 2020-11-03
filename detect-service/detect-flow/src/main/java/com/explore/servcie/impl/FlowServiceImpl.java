@@ -46,13 +46,15 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
                 .build();
     }
 
+    private final WebSocketServer webSocketServer;
+
     private final FlowMapper flowMapper;
 
     private final CameraClient cameraClient;
 
     private final IWarningService warningService;
 
-    private final WebSocketServer webSocketServer;
+
 
     public FlowServiceImpl(CameraClient cameraClient, IWarningService warningService, WebSocketServer webSocketServer, FlowMapper flowMapper) {
         this.cameraClient = cameraClient;
@@ -89,7 +91,11 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
             warningService.save(Warning.builder().number(flow.getFlow().intValue()).warning(camera.getWarning()).createTime(now).build());
             log.info(" 异常人流量 : warning => flow value : {}", flow.getFlow());
         }
-        webSocketServer.sendMessageToAll(String.valueOf(flow.getCameraId())
-                , WebMessage.createFlowMessage(String.valueOf(flow.getFlow()),LocalDateTime.now()).toJson());
+        String token = WebSocketServer.tokenMAP.get(camera.getUserId().toString());
+        if(token!=null){
+            webSocketServer.sendMessageToAll(token
+                    , WebMessage.createFlowMessage(String.valueOf(flow.getFlow()),LocalDateTime.now()).toJson());
+        }
+
     }
 }

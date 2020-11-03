@@ -1,15 +1,27 @@
 package com.explore.socket;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.explore.client.CameraClient;
+import com.explore.client.FlowClient;
+import com.explore.client.UserClient;
+
+import com.explore.common.ServerResponse;
+import com.explore.common.database.Camera;
+import com.explore.common.database.Flow;
+import com.explore.controller.FlowController;
+import com.explore.servcie.impl.WarningServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,6 +33,29 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocketServer {
 
     private static int onlineCount = 0;
+
+    @Autowired
+    public void setUserClient(UserClient userService){
+        WebSocketServer.userClient=userService;
+    }
+
+    @Autowired
+    public void setFlowClient(FlowClient flowClient){
+        WebSocketServer.flowClient=flowClient;
+    }
+
+    @Autowired
+    public void setCameraClient(CameraClient cameraClient){
+        WebSocketServer.cameraClient=cameraClient;
+    }
+
+    private static  UserClient userClient;
+
+    private static   FlowClient flowClient;
+
+    private static    CameraClient cameraClient;
+    @Autowired
+    private WarningServiceImpl warningService;
 
     private static synchronized int getOnlineCount() {
         return onlineCount;
@@ -34,58 +69,85 @@ public class WebSocketServer {
         WebSocketServer.onlineCount--;
     }
 
-    private static final ConcurrentHashMap<String, Set<Session>> MAP = new ConcurrentHashMap<>();
+
+
+    private static final ConcurrentHashMap<String, Session> MAP = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<String, String> tokenMAP = new ConcurrentHashMap<>();
+
+
 
     @OnOpen
-    public void onOpen(@PathParam("cid") String cid, @PathParam("token") String token, Session session){
+    public void onOpen(@PathParam("cid") String cid,  Session session){
+        Integer userId = getUserId(cid);
+        if(userId==null) return;
         if (!MAP.containsKey(cid)) {
-            Set<Session> connects = new HashSet<>();
-            connects.add(session);
-            MAP.put(cid, connects);
-        } else {
-            MAP.get(cid).add(session);
+            MAP.put(cid, session);
         }
-        log.info("[连接消息] cid:" + cid + " session:" + session.getId() + "当前连接数:" + MAP.get(cid).size());
+        tokenMAP.put(userId.toString(),cid);
         addOnlineCount();
+        log.info("[连接消息] cid:" + cid  + "当前连接数:" + WebSocketServer.onlineCount);
+
     }
 
     @OnMessage
-    public void onMessage(@PathParam("cid")String cid, @PathParam("token") String token, String message, Session session) {
-        WebMessage webMessage = JSON.parseObject(message, WebMessage.class);
-        sendMessage(webMessage.toJson(), MAP.get(cid),session);
+    public void onMessage(@PathParam("cid")String cid, String message, Session session) {
+        if(message.equals("init")){
+            Integer user_id = getUserId(cid);
+            ServerResponse serverResponse = cameraClient.getByUserId(user_id);
+            if(serverResponse.isSuccess()){
+                if(serverResponse.getData()!=null){
+                    List<Map> result = new ArrayList<>();
+                    List<LinkedHashMap> cameraList =(List<LinkedHashMap>) ((LinkedHashMap)serverResponse.getData()).get("records");
+                    for(LinkedHashMap o:cameraList){
+                        Map map = new HashMap();
+                        map.put("camera",o);
+                        Flow flow = flowClient.getById((Integer) o.get("id")).getData();
+                        Long num = 0L;
+                        if(flow != null) num = flow.getFlow();
+                        map.put("flow",num);
+                        result.add(map);
+                    }
+
+                    this.sendMessageToAll(String.valueOf(cid)
+                            , WebMessage.createInitMessage(result, LocalDateTime.now()).toJson());
+                }
+
+            }
+        }
         log.info("[收到消息] cid:" + cid + ", message:" + message);
     }
 
     @OnClose
     public void onClose(@PathParam("cid") String cid, Session session) {
         log.info("[连接退出消息] cid:" + cid);
-        Set set= MAP.get(cid);
-        if (set == null){
-            return;
-        }
-        set.remove(session);
+        Integer userId = getUserId(cid);
+        MAP.remove(cid);
+        if(userId==null) return;
+        tokenMAP.remove(userId.toString());
         subOnlineCount();
     }
 
     @OnError
     public void onError(@PathParam("cid")String cid, Session session, Throwable error) {
+        log.info("[发生错误消息] cid:" + cid);
+        Integer userId = getUserId(cid);
+        MAP.remove(cid);
+        if(userId==null) return;
+        tokenMAP.remove(userId.toString());
         subOnlineCount();
         error.printStackTrace();
     }
 
     public void sendMessageToAll(String cid, String message)  {
-        Set<Session> sessions = MAP.get(cid);
-        if (sessions==null){
-            return;
+        //log.info("[发送消息] 当前连接数:" + sessions.size());
+        Session connect = MAP.get(cid);
+        if(connect ==null) return;
+        try {
+            connect.getBasicRemote().sendText(message);
+        } catch (IOException e) {
+            log.error("发送失败");
         }
-        log.info("[发送消息] 当前连接数:" + sessions.size());
-        for (Session connect : sessions) {
-            try {
-                connect.getBasicRemote().sendText(message);
-            } catch (IOException e) {
-               log.error("发送失败");
-            }
-        }
+
     }
 
     private void sendMessage(String message, Set<Session> sessions, Session session)  {
@@ -99,6 +161,14 @@ public class WebSocketServer {
                 }
             }
         }
+    }
+
+    private Integer getUserId(String token){
+        Map res =  userClient.getById(token);
+        if(res==null) return null;
+        Map data = (Map) res.get("data");
+        if(data==null) return null;
+        return (Integer) data.get("user_id");
     }
 
 }

@@ -53,9 +53,7 @@ public class FlowController {
     @GetMapping("/flow-all")
     public ServerResponse getAllFlow(FlowQuery query) {
         List<Flow> flows = flowService.getAllFlowByQuery(query);
-        if (null != flows)
-            return ServerResponse.createBySuccess(flows);
-        return ServerResponse.createByError();
+        return ServerResponse.createBySuccess(flows);
     }
 
     // todo 分析人流量功能

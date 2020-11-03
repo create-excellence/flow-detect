@@ -1,24 +1,21 @@
 package com.explore.client;
 
+import com.explore.common.ServerResponse;
+import com.explore.common.database.Flow;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
 
-/**
- * @author PinTeh
- * @date 2020/6/22
- */
 @Primary
-@FeignClient(value = "detect-user")
-public interface UserClient {
+@FeignClient(value = "detect-flow")
+public interface FlowClient {
 
     /**
-     * 获取用户id
+     * 获取最新流
      * @return Camera
      */
-    @GetMapping("/user/getUserId")
-    Map getById(@RequestParam("token") String token);
+    @GetMapping("/api/v1/flow")
+    ServerResponse<Flow> getById(@RequestParam("cid") Integer cid);
 }

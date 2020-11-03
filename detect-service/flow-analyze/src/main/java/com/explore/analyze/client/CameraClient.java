@@ -1,4 +1,4 @@
-package com.explore.client;
+package com.explore.analyze.client;
 
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
@@ -23,7 +23,4 @@ public interface CameraClient {
      */
     @GetMapping("/camera")
     ServerResponse<Camera> getById(@RequestParam(value = "id") Integer id);
-
-    @GetMapping("/camera/list/all")
-    ServerResponse getByUserId(@RequestParam(value = "userId") Integer userId);
 }

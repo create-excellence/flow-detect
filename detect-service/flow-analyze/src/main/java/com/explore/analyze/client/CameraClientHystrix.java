@@ -1,4 +1,4 @@
-package com.explore.client;
+package com.explore.analyze.client;
 
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
@@ -18,11 +18,5 @@ public class CameraClientHystrix implements CameraClient {
     public ServerResponse<Camera> getById(Integer id) {
         log.warn("获取Camera失败,id = {}",id);
         return ServerResponse.createBySuccess(Camera.invalid());
-    }
-
-    @Override
-    public ServerResponse getByUserId(Integer userId) {
-        log.warn("获取用户Camera失败,id = {}",userId);
-        return null;
     }
 }

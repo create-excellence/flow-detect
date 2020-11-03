@@ -37,3 +37,13 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8000/eureka/
+
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000
+  hystrix:
+    enabled: true

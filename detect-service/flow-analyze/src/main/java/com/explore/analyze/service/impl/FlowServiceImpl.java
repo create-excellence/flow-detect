@@ -88,8 +88,7 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
 //        queryWrapper.ge(Flow::getCurrentTime, beginDate.toLocalDate());
         // 按照日期排序
         queryWrapper.orderByAsc(Flow::getRecordTime);
-        List<Flow> data = this.baseMapper.selectList(queryWrapper);
-        return data;
+        return this.baseMapper.selectList(queryWrapper);
     }
 
     @Override

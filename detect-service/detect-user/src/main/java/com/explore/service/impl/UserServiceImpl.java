@@ -90,12 +90,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         queryWrapper.eq(User::getUsername, changePassword.getUsername())
                 .eq(User::getPassword, changePassword.getOldPassword());
         User user = getOne(queryWrapper);
+        if(user == null)  return ServerResponse.createByErrorMessage("原密码不正确");
         user.setPassword(changePassword.getNewPassword());
         Boolean result = saveOrUpdate(user);
         if (result) {
             return ServerResponse.createBySuccess("密码修改成功!");
         } else {
-            return ServerResponse.createBySuccess("密码修改失败!");
+            return ServerResponse.createByErrorMessage("密码修改失败!");
         }
     }
 

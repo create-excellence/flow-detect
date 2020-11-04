@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author PinTeh
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint(value = "/connect/{cid}")
 public class WebSocketServer {
 
-    private static int onlineCount = 0;
+    private static AtomicInteger onlineCount = new AtomicInteger(0);
 
     @Autowired
     public void setUserClient(UserClient userService){
@@ -58,15 +59,15 @@ public class WebSocketServer {
     private WarningServiceImpl warningService;
 
     private static synchronized int getOnlineCount() {
-        return onlineCount;
+        return onlineCount.get();
     }
 
     private static synchronized void addOnlineCount() {
-        WebSocketServer.onlineCount++;
+        WebSocketServer.onlineCount.getAndIncrement();
     }
 
     private static synchronized void subOnlineCount() {
-        WebSocketServer.onlineCount--;
+        WebSocketServer.onlineCount.getAndDecrement();
     }
 
 
@@ -85,7 +86,7 @@ public class WebSocketServer {
         }
         tokenMAP.put(userId.toString(),cid);
         addOnlineCount();
-        log.info("[连接消息] cid:" + cid  + "当前连接数:" + WebSocketServer.onlineCount);
+        log.info("[连接消息] cid:" + cid  + "当前连接数:" + WebSocketServer.getOnlineCount());
 
     }
 

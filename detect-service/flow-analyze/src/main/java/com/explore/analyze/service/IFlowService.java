@@ -6,6 +6,7 @@ import com.explore.common.database.Flow;
 import com.explore.common.database.FlowHour;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @InterfaceName IFlowService
@@ -19,6 +20,8 @@ public interface IFlowService extends IService<Flow> {
     List<FlowHour> getPeriodFlowByQuery(FlowQuery query);
 
     List<Flow> getAllFlowByQuery(FlowQuery query);
+
+    List<Map<String,Object>> getAllFlowByQueryV2(FlowQuery query);
 
     List<FlowHour> getFlowByQuery(FlowQuery query);
 }

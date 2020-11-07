@@ -49,13 +49,14 @@ public class WebMessage {
         return webMessage;
     }
 
-    public static WebMessage createFlowMessage(String number, LocalDateTime now){
+    public static WebMessage createFlowMessage(String number, LocalDateTime now,Integer id){
         WebMessage webMessage = new WebMessage();
         webMessage.setOp("MESSAGE");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("mm:ss");
         Map<String,Object> map = new HashMap<>(2);
         map.put("number",number);
         map.put("now",df.format(now));
+        map.put("cid",id);
         webMessage.setD(map);
         return webMessage;
     }

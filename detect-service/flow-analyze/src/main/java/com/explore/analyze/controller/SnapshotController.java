@@ -37,7 +37,7 @@ public class SnapshotController {
     @PostMapping("/add")
     public ServerResponse add(@RequestBody Snapshot snapshot) {
         // todo 保存上传的快照
-        Boolean result = snapshotService.saveOrUpdate(snapshot);
+        boolean result = snapshotService.saveOrUpdate(snapshot);
         if (result) {
             return ServerResponse.createBySuccessMessage("添加成功");
         }

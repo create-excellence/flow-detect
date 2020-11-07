@@ -4,8 +4,7 @@ import com.explore.common.ServerResponse;
 import com.explore.common.database.Camera;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author PinTeh
@@ -26,4 +25,7 @@ public interface CameraClient {
 
     @GetMapping("/camera/list/all")
     ServerResponse getByUserId(@RequestParam(value = "userId") Integer userId);
+
+    @PutMapping("/camera/{id}")
+    ServerResponse reviseCamera(@RequestBody Camera camera,@PathVariable("id") Integer id);
 }

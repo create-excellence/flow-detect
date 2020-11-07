@@ -33,4 +33,10 @@ public class Snapshot {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
+  public   Snapshot(){
+        this.recordTime = LocalDateTime.now();
+        this.createTime = LocalDateTime.now();
+        this.updateTime = LocalDateTime.now();
+    }
 }

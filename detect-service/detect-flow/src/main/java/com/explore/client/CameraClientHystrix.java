@@ -25,4 +25,9 @@ public class CameraClientHystrix implements CameraClient {
         log.warn("获取用户Camera失败,id = {}",userId);
         return null;
     }
+
+    @Override
+    public ServerResponse reviseCamera(Camera camera, Integer id) {
+        return null;
+    }
 }

@@ -1,6 +1,10 @@
 spring:
   application:
     name: detect-zuul
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 
 server:
   port: 9000
@@ -23,9 +27,13 @@ zuul:
       path: /detect-flow/**
       service-id: detect-flow
   host:
-    connect-timeout-millis: 10000
+    connect-timeout-millis: 15000
     socket-timeout-millis: 60000
 
+
+hystrix:
+  metrics:
+    polling-interval-ms: 10000
 
 eureka:
   client:

@@ -92,29 +92,29 @@ public class WebSocketServer {
 
     @OnMessage
     public void onMessage(@PathParam("cid")String cid, String message, Session session) {
-        if(message.equals("init")){
-            Integer user_id = getUserId(cid);
-            ServerResponse serverResponse = cameraClient.getByUserId(user_id);
-            if(serverResponse.isSuccess()){
-                if(serverResponse.getData()!=null){
-                    List<Map> result = new ArrayList<>();
-                    List<LinkedHashMap> cameraList =(List<LinkedHashMap>) ((LinkedHashMap)serverResponse.getData()).get("records");
-                    for(LinkedHashMap o:cameraList){
-                        Map map = new HashMap();
-                        map.put("camera",o);
-                        Flow flow = flowClient.getById((Integer) o.get("id")).getData();
-                        Long num = 0L;
-                        if(flow != null) num = flow.getFlow();
-                        map.put("flow",num);
-                        result.add(map);
-                    }
-
-                    this.sendMessageToAll(String.valueOf(cid)
-                            , WebMessage.createInitMessage(result, LocalDateTime.now()).toJson());
-                }
-
-            }
-        }
+//        if(message.equals("init")){
+//            Integer user_id = getUserId(cid);
+//            ServerResponse serverResponse = cameraClient.getByUserId(user_id);
+//            if(serverResponse.isSuccess()){
+//                if(serverResponse.getData()!=null){
+//                    List<Map> result = new ArrayList<>();
+//                    List<LinkedHashMap> cameraList =(List<LinkedHashMap>) ((LinkedHashMap)serverResponse.getData()).get("records");
+//                    for(LinkedHashMap o:cameraList){
+//                        Map map = new HashMap();
+//                        map.put("camera",o);
+//                        Flow flow = flowClient.getById((Integer) o.get("id")).getData();
+//                        Long num = 0L;
+//                        if(flow != null) num = flow.getFlow();
+//                        map.put("flow",num);
+//                        result.add(map);
+//                    }
+//
+//                    this.sendMessageToAll(String.valueOf(cid)
+//                            , WebMessage.createInitMessage(result, LocalDateTime.now()).toJson());
+//                }
+//
+//            }
+//        }
         log.info("[收到消息] cid:" + cid + ", message:" + message);
     }
 
@@ -164,7 +164,7 @@ public class WebSocketServer {
         }
     }
 
-    private Integer getUserId(String token){
+    public Integer getUserId(String token){
         Map res =  userClient.getById(token);
         if(res==null) return null;
         Map data = (Map) res.get("data");

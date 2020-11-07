@@ -8,6 +8,7 @@ import com.explore.servcie.IFlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author PinTeh
@@ -30,8 +31,8 @@ public class FlowController {
      * @param flow obj
      */
     @PostMapping
-    public void save(@RequestBody Flow flow) {
-        flowService.saveData(flow);
+    public void save(Flow flow,@RequestParam(value="file", required=false) MultipartFile file) {
+        flowService.saveData(flow,file);
     }
 
     /**
@@ -59,5 +60,11 @@ public class FlowController {
                 flowService.page(
                         new Page<>(page, limit),
                         new QueryWrapper<Flow>().eq("camera_id", cid).orderByDesc("id")));
+    }
+
+
+    @GetMapping("/getUserCameraAndFlow")
+    public ServerResponse getUserCameraAndFlow() {
+        return   flowService.getUserCameraAndFlow();
     }
 }

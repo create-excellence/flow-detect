@@ -1,6 +1,7 @@
 package com.explore.analyze.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.explore.analyze.form.FlowQuery;
 import com.explore.analyze.mappers.FlowMapper;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName FlowServiceImpl
@@ -92,6 +95,32 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
     }
 
     @Override
+    public List<Map<String,Object>> getAllFlowByQueryV2(FlowQuery query) {
+        List<Map<String,Object>> list = new ArrayList<>();
+        List<String> betweenDate = getBetweenDate(query.getBeginTime().toLocalDate(), query.getEndTime().toLocalDate());
+        betweenDate.forEach(v->{
+            List<Flow> flows = this.baseMapper.selectList(new QueryWrapper<Flow>().eq("camera_id",query.getCameraId()).apply(
+                    "date_format(record_time,'%Y-%m-%d') = '" + v + "'"
+            ));
+            long count = 0;
+            for (Flow flow : flows) {
+                count += flow.getFlow();
+            }
+            // 计算平均值
+            long average = 0;
+            if (flows.size() != 0){
+                 average = count / flows.size();
+            }
+            Map<String,Object> map = new HashMap<>(2);
+            map.put("recordTime",v);
+            map.put("flow",average);
+            list.add(map);
+        });
+
+        return list;
+    }
+
+    @Override
     public List<FlowHour> getFlowByQuery(FlowQuery query) {
         LambdaQueryWrapper<FlowHour> queryWrapper = new LambdaQueryWrapper<>();
         if (query.getCameraId() != null && query.getCameraId() > 0) {
@@ -158,5 +187,16 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
             beginDate = beginDate.plusDays(1);      // 向前推移一天
         }
         return result;
+    }
+
+    private static List<String> getBetweenDate(LocalDate start, LocalDate end) {
+        long between = ChronoUnit.DAYS.between(start, end);
+        if (between < 1) {
+            return Stream.of(start.toString(), end.toString()).collect(Collectors.toList());
+        }
+        return Stream.iterate(start, e -> e.plusDays(1))
+                .limit(between + 1)
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
     }
 }

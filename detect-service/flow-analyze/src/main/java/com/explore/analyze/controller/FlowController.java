@@ -56,5 +56,13 @@ public class FlowController {
         return ServerResponse.createBySuccess(flows);
     }
 
+    /**
+     * 查询每天平均人数
+     */
+    @GetMapping("/v2/flow-all")
+    public ServerResponse getAllFlowV2(FlowQuery query) {
+        return ServerResponse.createBySuccess(flowService.getAllFlowByQueryV2(query));
+    }
+
     // todo 分析人流量功能
 }

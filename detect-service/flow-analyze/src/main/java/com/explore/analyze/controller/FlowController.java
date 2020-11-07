@@ -43,6 +43,13 @@ public class FlowController {
         return ServerResponse.createByError();
     }
 
+    @GetMapping("/v2/flow")
+    public ServerResponse getFlowV2(FlowQuery query) {
+        List<FlowHour> flows = flowService.getPeriodFlowByQueryV2(query);
+        return ServerResponse.createBySuccess(flows);
+    }
+
+
     /**
      * @Author 安羽兮
      * @Description 获取指定时间内原生人流量数据

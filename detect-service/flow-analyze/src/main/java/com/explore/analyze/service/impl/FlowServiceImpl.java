@@ -66,6 +66,33 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
         return packageData(query, data);
     }
 
+    /**
+     * 查询指定日期24小时的平均人数
+     */
+    @Override
+    public List<FlowHour> getPeriodFlowByQueryV2(FlowQuery query) {
+        List<FlowHour> flowHours = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (int i = 0; i < 24; i++) {
+            FlowHour flowHour = new FlowHour();
+            flowHour.setHour(i);
+            flowHour.setCameraId(query.getCameraId());
+            flowHour.setDate(query.getBeginTime().toLocalDate());
+
+            List<Flow> flows = this.baseMapper.selectList(new QueryWrapper<Flow>().eq("camera_id", query.getCameraId()).apply(
+                    "date_format(record_time,'%Y-%m-%d %k') = '" + formatter.format(query.getBeginTime()) + " " + i +"'"
+            ));
+            if (flows.size()!=0){
+                long totalFlowCount = flows.stream().mapToLong(Flow::getFlow).sum();
+                flowHour.setHourFlow((int)(totalFlowCount / flows.size()));
+            }else{
+                flowHour.setHourFlow(0);
+            }
+            flowHours.add(flowHour);
+        }
+        return flowHours;
+    }
+
     @Override
     public List<Flow> getAllFlowByQuery(FlowQuery query) {
         LambdaQueryWrapper<Flow> queryWrapper = new LambdaQueryWrapper<>();

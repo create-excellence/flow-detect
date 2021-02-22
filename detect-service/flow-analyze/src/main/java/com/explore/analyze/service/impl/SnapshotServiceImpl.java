@@ -12,14 +12,18 @@ import com.explore.analyze.vo.SnapshotVo;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Flow;
 import com.explore.common.database.Snapshot;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -29,11 +33,15 @@ import java.util.*;
  * @Date 2020/7/1518:07
  * @Version 1.0
  **/
+@Slf4j
 @Service
 public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> implements ISnapshotService {
 
     @Value("${spring.uploadPath}")
     private String uploadPath;
+
+    @Value("${detect.snapshot.upload-path}")
+    private String snapshotUploadPath;
 
     private final ResourceLoader resourceLoader;
 
@@ -99,6 +107,38 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Override
+    public void saveV2(MultipartFile file, Long cameraId, Long flowCount) {
+        String originalFilename = file.getOriginalFilename();
+        if (StringUtils.isEmpty(originalFilename)){
+            log.error("get file original filename is empty");
+            return;
+        }
+
+        String ext = originalFilename.substring(originalFilename.indexOf("."));
+        String timeFileNamePrefix = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS").format(new Date());
+        String newFileName = timeFileNamePrefix + ext;
+
+        String dir = uploadPath + "/" + cameraId + "/";
+        File fileDir = new File(dir);
+        if (!fileDir.exists()){
+            boolean mkdirs = fileDir.mkdirs();
+            log.info("create file dir : result = {}.", mkdirs);
+        }
+        File localFile = new File(dir + newFileName);
+        try {
+            file.transferTo(localFile);
+        } catch (IOException e) {
+            log.error("save file error",e);
+        }
+
+        Snapshot snapshot = new Snapshot();
+        snapshot.setCameraId(cameraId);
+        snapshot.setFlowCount(flowCount);
+        snapshot.setFileName(originalFilename);
+        this.baseMapper.insert(snapshot);
     }
 
     private String upload(MultipartFile file, String path, String fileName) throws Exception {

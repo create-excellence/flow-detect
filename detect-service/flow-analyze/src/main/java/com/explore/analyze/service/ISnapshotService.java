@@ -22,4 +22,12 @@ public interface ISnapshotService extends IService<Snapshot> {
     ServerResponse upload(MultipartFile file);
 
     ResponseEntity show(String fileName);
+
+    /**
+     * 保存快照记录v2
+     * @param file 快照
+     * @param cameraId 摄像头id
+     * @param flowCount 人数
+     */
+    void saveV2(MultipartFile file, Long cameraId, Long flowCount);
 }

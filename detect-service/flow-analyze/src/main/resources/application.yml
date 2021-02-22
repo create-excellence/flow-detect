@@ -47,3 +47,7 @@ feign:
         read-timeout: 5000
   hystrix:
     enabled: true
+
+detect:
+  snapshot:
+    upload-path: /home/detect/snapshots/

@@ -4,11 +4,15 @@ import com.explore.analyze.form.SnapshotQuery;
 import com.explore.analyze.service.ISnapshotService;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Snapshot;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @ClassName SnapshotController
@@ -17,6 +21,7 @@ import javax.validation.constraints.NotNull;
  * @Date 2020/7/1518:06
  * @Version 1.0
  **/
+@Slf4j
 @RestController
 @RequestMapping("/snapshot")
 public class SnapshotController {
@@ -112,5 +117,13 @@ public class SnapshotController {
     @GetMapping("/show/{fileName}")
     public ResponseEntity showPhotos(@PathVariable("fileName") String fileName) {
         return snapshotService.show(fileName);
+    }
+
+    /**
+     * 保存快照信息v2
+     */
+    @PostMapping("/v2/save")
+    public void saveV2(@RequestParam MultipartFile file,@RequestParam Long cameraId,@RequestParam Long flowCount){
+        snapshotService.saveV2(file,cameraId,flowCount);
     }
 }

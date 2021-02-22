@@ -16,7 +16,7 @@ public class Snapshot {
 
     private Long id;
 
-//    private Long flow;
+    private Long flowCount;
 
     private Long flowId;
 
@@ -28,13 +28,15 @@ public class Snapshot {
 
     private String path;
 
+    private String fileName;
+
     private LocalDateTime recordTime;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
 
-  public   Snapshot(){
+    public Snapshot(){
         this.recordTime = LocalDateTime.now();
         this.createTime = LocalDateTime.now();
         this.updateTime = LocalDateTime.now();

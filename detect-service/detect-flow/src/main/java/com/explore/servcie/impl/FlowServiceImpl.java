@@ -109,10 +109,12 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
         }
 
         // 保存图片到服务器
-        String fileName = saveSnapshotsFile(file, camera.getId());
-        String filePath = "/" + camera.getId() + "/" + fileName;
 
+        String fileName = null;
+        String filePath = null;
         if (flow.getFlow().compareTo(camera.getWarning().longValue()) > 0) {
+             fileName = saveSnapshotsFile(file, camera.getId());
+             filePath = "/" + camera.getId() + "/" + fileName;
             String value = cache.getIfPresent(String.valueOf(camera.getId()));
             if (value != null) {
                 return;
@@ -132,6 +134,10 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
         }
         boolean isCover =new Random().nextInt(10) % 100 == 0;
         if(isCover){
+            if(fileName == null){
+                fileName = saveSnapshotsFile(file, camera.getId());
+                filePath = "/" + camera.getId() + "/" + fileName;
+            }
             camera.setCover(filePath);
             cameraClient.reviseCamera(camera,camera.getId());
         }

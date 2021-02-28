@@ -8,8 +8,10 @@ import com.explore.analyze.form.SnapshotQuery;
 import com.explore.analyze.mappers.SnapshotMapper;
 import com.explore.analyze.service.IFlowService;
 import com.explore.analyze.service.ISnapshotService;
+import com.explore.analyze.until.UserUtils;
 import com.explore.analyze.vo.SnapshotVo;
 import com.explore.common.ServerResponse;
+import com.explore.common.database.Camera;
 import com.explore.common.database.Flow;
 import com.explore.common.database.Snapshot;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName SnapshotServiceImpl
@@ -49,12 +52,13 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
 
     private final CameraClient cameraClient;
 
+    private final UserUtils userUtils;
 
-    public SnapshotServiceImpl(ResourceLoader resourceLoader, IFlowService flowService, CameraClient cameraClient) {
+    public SnapshotServiceImpl(ResourceLoader resourceLoader, IFlowService flowService, CameraClient cameraClient, UserUtils userUtils) {
         this.resourceLoader = resourceLoader;
         this.flowService = flowService;
         this.cameraClient = cameraClient;
-
+        this.userUtils = userUtils;
     }
 
 
@@ -69,12 +73,14 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
             BeanUtils.copyProperties(snapshot, snapshotVo);
             Flow flow = flowService.getById(snapshotVo.getFlowId());
             snapshotVo.setFlow(flow);
-            if (null != flow)
+            if (null != flow) {
                 snapshotVo.setCamera(cameraClient.getById(flow.getCameraId()).getData());
+            }
             // 满足筛选条件才加入集合
             if (null == query.getFlow() || flow.getFlow().intValue() >= query.getFlow().intValue()) {
-                if (null == query.getOrganizationId() || snapshotVo.getCamera().getOrganizationId().equals(query.getOrganizationId()))
+                if (null == query.getOrganizationId() || snapshotVo.getCamera().getOrganizationId().equals(query.getOrganizationId())) {
                     snapshotVos.add(snapshotVo);
+                }
             } else {
                 snapshotVo = null;
             }
@@ -121,7 +127,7 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
         String timeFileNamePrefix = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS").format(new Date());
         String newFileName = timeFileNamePrefix + ext;
 
-        String dir = uploadPath + "/" + cameraId + "/";
+        String dir = snapshotUploadPath + "/" + cameraId + "/";
         File fileDir = new File(dir);
         if (!fileDir.exists()){
             boolean mkdirs = fileDir.mkdirs();
@@ -137,8 +143,26 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
         Snapshot snapshot = new Snapshot();
         snapshot.setCameraId(cameraId);
         snapshot.setFlowCount(flowCount);
-        snapshot.setFileName(originalFilename);
+        snapshot.setFileName(newFileName);
+        snapshot.setPath("/" + cameraId + "/" + newFileName);
         this.baseMapper.insert(snapshot);
+    }
+
+    @Override
+    public Page<Snapshot> pageByUser(Integer page, Integer limit) {
+        Integer userId = userUtils.getUserId();
+        if (userId == null){
+            log.info("获取userId为空");
+            return null;
+        }
+        ServerResponse<Page<Camera>> cameraPage = cameraClient.getPageByUserId(page, limit,userId);
+        if (cameraPage == null || cameraPage.getData() == null || cameraPage.getData().getRecords() == null){
+            return null;
+        }
+        List<Camera> records = cameraPage.getData().getRecords();
+        List<Integer> cameraIds = records.stream().map(Camera::getId).collect(Collectors.toList());
+        Page<Snapshot> pageLimit = new Page<>(page,limit);
+        return this.baseMapper.selectPage(pageLimit, new LambdaQueryWrapper<Snapshot>().in(Snapshot::getCameraId,cameraIds));
     }
 
     private String upload(MultipartFile file, String path, String fileName) throws Exception {

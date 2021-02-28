@@ -30,4 +30,7 @@ public interface ISnapshotService extends IService<Snapshot> {
      * @param flowCount 人数
      */
     void saveV2(MultipartFile file, Long cameraId, Long flowCount);
+
+    Page<Snapshot> pageByUser(Integer page, Integer limit);
+
 }

@@ -28,12 +28,19 @@ zuul:
       service-id: detect-flow
   host:
     connect-timeout-millis: 15000
-    socket-timeout-millis: 60000
+    socket-timeout-millis: 15000
 
+ribbon:
+  ReadTimeout: 5001
+  ConnectTimeout: 5002
 
 hystrix:
-  metrics:
-    polling-interval-ms: 10000
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60001
 
 eureka:
   client:

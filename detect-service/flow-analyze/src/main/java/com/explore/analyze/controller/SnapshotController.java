@@ -1,18 +1,16 @@
 package com.explore.analyze.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.explore.analyze.form.SnapshotQuery;
 import com.explore.analyze.service.ISnapshotService;
 import com.explore.common.ServerResponse;
 import com.explore.common.database.Snapshot;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @ClassName SnapshotController
@@ -97,6 +95,12 @@ public class SnapshotController {
     @GetMapping("/list")
     public ServerResponse snapshot(SnapshotQuery query) {
         return ServerResponse.createBySuccess(snapshotService.pageByQuery(query));
+    }
+
+    @GetMapping("/v2/list")
+    public ServerResponse snapshots(@RequestParam(required = false,defaultValue = "1") Integer page,@RequestParam(required = false,defaultValue = "10")Integer limit) {
+        Page<Snapshot> snapshotPage = snapshotService.pageByUser(page,limit);
+        return ServerResponse.createBySuccess(snapshotPage);
     }
 
     /**

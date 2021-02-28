@@ -12,9 +12,9 @@ import lombok.Data;
 @Data
 public class SnapshotQuery {
 
-    private Integer page = 1;
+    private Integer page;
 
-    private Integer size = 10;
+    private Integer size;
 
     private Integer flow;   // 根据人流量筛选
 

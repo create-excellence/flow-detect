@@ -38,15 +38,22 @@ eureka:
     service-url:
       defaultZone: http://localhost:8000/eureka/
 
-
 feign:
   client:
     config:
       default:
-        connect-timeout: 5000
-        read-timeout: 5000
+        connect-timeout: 5003
+        read-timeout: 5004
   hystrix:
     enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60002
 
 detect:
   snapshot:

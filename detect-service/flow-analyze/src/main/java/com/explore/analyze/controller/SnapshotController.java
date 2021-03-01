@@ -98,8 +98,10 @@ public class SnapshotController {
     }
 
     @GetMapping("/v2/list")
-    public ServerResponse snapshots(@RequestParam(required = false,defaultValue = "1") Integer page,@RequestParam(required = false,defaultValue = "10")Integer limit) {
-        Page<Snapshot> snapshotPage = snapshotService.pageByUser(page,limit);
+    public ServerResponse snapshots(@RequestParam(required = false,defaultValue = "1") Integer page,
+                                    @RequestParam(required = false,defaultValue = "10")Integer limit,
+                                    @RequestParam(required = false)Integer cameraId) {
+        Page<Snapshot> snapshotPage = snapshotService.pageByUser(page,limit,cameraId);
         return ServerResponse.createBySuccess(snapshotPage);
     }
 

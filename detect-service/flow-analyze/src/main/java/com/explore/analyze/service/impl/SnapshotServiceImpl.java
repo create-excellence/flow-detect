@@ -149,7 +149,7 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
     }
 
     @Override
-    public Page<Snapshot> pageByUser(Integer page, Integer limit) {
+    public Page<Snapshot> pageByUser(Integer page, Integer limit,Integer cameraId) {
         Integer userId = userUtils.getUserId();
         if (userId == null){
             log.info("获取userId为空");
@@ -162,7 +162,7 @@ public class SnapshotServiceImpl extends ServiceImpl<SnapshotMapper, Snapshot> i
         List<Camera> records = cameraPage.getData().getRecords();
         List<Integer> cameraIds = records.stream().map(Camera::getId).collect(Collectors.toList());
         Page<Snapshot> pageLimit = new Page<>(page,limit);
-        return this.baseMapper.selectPage(pageLimit, new LambdaQueryWrapper<Snapshot>().in(Snapshot::getCameraId,cameraIds));
+        return this.baseMapper.selectPage(pageLimit, new LambdaQueryWrapper<Snapshot>().eq(cameraId != null,Snapshot::getCameraId,cameraId).in(cameraId == null,Snapshot::getCameraId,cameraIds));
     }
 
     private String upload(MultipartFile file, String path, String fileName) throws Exception {

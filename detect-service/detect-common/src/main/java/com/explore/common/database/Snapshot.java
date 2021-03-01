@@ -30,6 +30,10 @@ public class Snapshot {
 
     private String fileName;
 
+    private String position;
+
+    private Long threshold;
+
     private LocalDateTime recordTime;
 
     private LocalDateTime createTime;

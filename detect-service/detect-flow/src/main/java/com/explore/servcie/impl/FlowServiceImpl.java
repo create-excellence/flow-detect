@@ -122,6 +122,8 @@ public class FlowServiceImpl extends ServiceImpl<FlowMapper, Flow> implements IF
             snapshot.setInfo("人流量超出预警值");
             snapshot.setFileName(fileName);
             snapshot.setPath(filePath);
+            snapshot.setThreshold(camera.getWarning().longValue());
+            snapshot.setPosition(camera.getPosition());
             // 1代表预警
             snapshot.setStatus(1);
             snapshotClient.add(snapshot);

@@ -31,6 +31,6 @@ public interface ISnapshotService extends IService<Snapshot> {
      */
     void saveV2(MultipartFile file, Long cameraId, Long flowCount);
 
-    Page<Snapshot> pageByUser(Integer page, Integer limit);
+    Page<Snapshot> pageByUser(Integer page, Integer limit,Integer cameraId);
 
 }
